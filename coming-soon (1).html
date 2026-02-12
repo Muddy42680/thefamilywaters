@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coming Soon!</title>
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Lilita+One&family=Fredoka:wght@400;600;700&family=Bangers&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --roblox-red: #e2231a;
+    --gorilla-green: #4caf50;
+    --gorilla-brown: #6d4c2a;
+    --brainrot-gold: #ffd700;
+    --brainrot-blue: #1e90ff;
+    --bg-dark: #0d0d1a;
+    --neon-pink: #ff2d95;
+    --neon-cyan: #00f0ff;
+    --neon-lime: #b8ff00;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Fredoka', sans-serif;
+    color: #fff;
+    position: relative;
+  }
+
+  /* === ANIMATED BACKGROUND === */
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+    animation: gridShift 20s linear infinite;
+  }
+  @keyframes gridShift {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(40px,40px); }
+  }
+
+  .bg-blobs {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.25;
+    animation: blobFloat 12s ease-in-out infinite alternate;
+  }
+  .blob:nth-child(1) { width: 500px; height: 500px; background: var(--roblox-red); top: -10%; left: -5%; animation-delay: 0s; }
+  .blob:nth-child(2) { width: 400px; height: 400px; background: var(--gorilla-green); bottom: -10%; right: -5%; animation-delay: -3s; }
+  .blob:nth-child(3) { width: 350px; height: 350px; background: var(--brainrot-blue); top: 40%; left: 50%; animation-delay: -6s; }
+  .blob:nth-child(4) { width: 300px; height: 300px; background: var(--neon-pink); top: 10%; right: 20%; animation-delay: -9s; }
+
+  @keyframes blobFloat {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -40px) scale(1.1); }
+    66% { transform: translate(-20px, 30px) scale(0.9); }
+    100% { transform: translate(40px, 20px) scale(1.05); }
+  }
+
+  /* === FLOATING EMOJIS === */
+  .floating-emojis {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .emoji {
+    position: absolute;
+    font-size: 2rem;
+    animation: emojiRise linear infinite;
+    opacity: 0;
+  }
+  @keyframes emojiRise {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.7; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* === MAIN CONTENT === */
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  /* === TOP BANNER === */
+  .banner {
+    background: linear-gradient(90deg, var(--roblox-red), var(--neon-pink), var(--brainrot-blue), var(--gorilla-green), var(--brainrot-gold), var(--roblox-red));
+    background-size: 300% 100%;
+    animation: bannerScroll 4s linear infinite;
+    padding: 0.6rem 2rem;
+    border-radius: 50px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: bannerScroll 4s linear infinite, fadeSlideDown 0.8s 0.2s ease forwards;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+  @keyframes bannerScroll {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+
+  /* === COMING SOON TITLE === */
+  .title-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeSlideDown 1s 0.4s ease forwards;
+  }
+  .title {
+    font-family: 'Bungee Shade', cursive;
+    font-size: clamp(3rem, 10vw, 7rem);
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink), var(--brainrot-gold), var(--neon-lime));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleGradient 5s ease infinite;
+    filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.3));
+  }
+  @keyframes titleGradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .title-shadow {
+    position: absolute;
+    inset: 0;
+    font-family: 'Bungee Shade', cursive;
+    font-size: clamp(3rem, 10vw, 7rem);
+    line-height: 1.1;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(255,255,255,0.07);
+    transform: translate(4px, 4px);
+    z-index: -1;
+  }
+
+  /* === SUBTITLE === */
+  .subtitle {
+    font-family: 'Lilita One', cursive;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeSlideDown 1s 0.6s ease forwards;
+    text-shadow: 0 0 20px rgba(0,240,255,0.2);
+  }
+  .subtitle .name {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px rgba(0,240,255,0.5);
+  }
+
+  /* === THEME CARDS === */
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 3rem;
+    max-width: 900px;
+  }
+
+  .card {
+    width: 260px;
+    border-radius: 20px;
+    padding: 1.8rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    opacity: 0;
+  }
+  .card:nth-child(1) { animation: fadeSlideUp 0.8s 0.8s ease forwards; }
+  .card:nth-child(2) { animation: fadeSlideUp 0.8s 1.0s ease forwards; }
+  .card:nth-child(3) { animation: fadeSlideUp 0.8s 1.2s ease forwards; }
+
+  .card:hover {
+    transform: translateY(-8px) scale(1.03);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(135deg, var(--card-accent), transparent, var(--card-accent));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .card-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    opacity: 0.12;
+    z-index: 0;
+  }
+
+  .card-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-icon {
+    font-size: 3.5rem;
+    margin-bottom: 0.8rem;
+    display: block;
+    animation: cardIconBounce 2s ease-in-out infinite;
+  }
+  .card:nth-child(2) .card-icon { animation-delay: -0.7s; }
+  .card:nth-child(3) .card-icon { animation-delay: -1.4s; }
+
+  @keyframes cardIconBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-8px) rotate(-5deg); }
+    75% { transform: translateY(-4px) rotate(5deg); }
+  }
+
+  .card-title {
+    font-family: 'Lilita One', cursive;
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .card-desc {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    line-height: 1.4;
+  }
+
+  /* Italian Brainrot Card */
+  .card-brainrot {
+    --card-accent: var(--brainrot-gold);
+    background: linear-gradient(145deg, rgba(255,215,0,0.12), rgba(30,144,255,0.08), rgba(13,13,26,0.9));
+  }
+  .card-brainrot .card-bg {
+    background: repeating-conic-gradient(var(--brainrot-gold) 0% 25%, transparent 0% 50%) 50% / 20px 20px;
+  }
+  .card-brainrot .card-title { color: var(--brainrot-gold); }
+  .card-brainrot:hover { box-shadow: 0 10px 40px rgba(255,215,0,0.2); }
+
+  /* Roblox Card */
+  .card-roblox {
+    --card-accent: var(--roblox-red);
+    background: linear-gradient(145deg, rgba(226,35,26,0.12), rgba(255,45,149,0.06), rgba(13,13,26,0.9));
+  }
+  .card-roblox .card-bg {
+    background: repeating-linear-gradient(45deg, var(--roblox-red) 0px, var(--roblox-red) 4px, transparent 4px, transparent 12px);
+  }
+  .card-roblox .card-title { color: var(--roblox-red); }
+  .card-roblox:hover { box-shadow: 0 10px 40px rgba(226,35,26,0.25); }
+
+  /* Gorilla Tag Card */
+  .card-gorilla {
+    --card-accent: var(--gorilla-green);
+    background: linear-gradient(145deg, rgba(76,175,80,0.12), rgba(109,76,42,0.08), rgba(13,13,26,0.9));
+  }
+  .card-gorilla .card-bg {
+    background: radial-gradient(circle at 30% 30%, var(--gorilla-green) 1px, transparent 1px),
+                radial-gradient(circle at 70% 60%, var(--gorilla-green) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+  .card-gorilla .card-title { color: var(--gorilla-green); }
+  .card-gorilla:hover { box-shadow: 0 10px 40px rgba(76,175,80,0.2); }
+
+  /* === BRAINROT TICKER === */
+  .ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeSlideDown 0.8s 1.4s ease forwards;
+  }
+  .ticker {
+    display: flex;
+    width: max-content;
+    animation: tickerScroll 30s linear infinite;
+    gap: 2rem;
+  }
+  .ticker-item {
+    font-family: 'Bangers', cursive;
+    font-size: 1.3rem;
+    white-space: nowrap;
+    padding: 0.4rem 1.2rem;
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+  }
+  .ticker-item:hover {
+    background: rgba(255,255,255,0.1);
+    transform: scale(1.05);
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+  }
+  @keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* === ANIMATED CHARACTERS === */
+  .scene {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 100px;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.6s ease forwards;
+  }
+
+  .character {
+    position: absolute;
+    bottom: 0;
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+  }
+
+  .gorilla {
+    animation: gorillaSwing 3s ease-in-out infinite;
+    left: 10%;
+  }
+  @keyframes gorillaSwing {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-30px) rotate(5deg); }
+  }
+
+  .roblox-char {
+    animation: robloxJump 1.5s ease-in-out infinite;
+    left: 45%;
+  }
+  @keyframes robloxJump {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    10% { transform: translateY(0) scaleY(0.85) scaleX(1.15); }
+    40% { transform: translateY(-40px) scaleY(1.1) scaleX(0.9); }
+    60% { transform: translateY(-40px) scaleY(1.1); }
+    90% { transform: translateY(0) scaleY(0.9) scaleX(1.1); }
+  }
+
+  .brainrot-char {
+    animation: brainrotDance 2s ease-in-out infinite;
+    right: 10%;
+  }
+  @keyframes brainrotDance {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    25% { transform: rotate(-15deg) translateY(-10px); }
+    50% { transform: rotate(0deg) translateY(-20px); }
+    75% { transform: rotate(15deg) translateY(-10px); }
+  }
+
+  /* === BUILDERS SECTION === */
+  .builders {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.8s ease forwards;
+  }
+  a.builder-badge {
+    text-decoration: none;
+    color: inherit;
+  }
+  .builder-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  .builder-badge:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--neon-lime);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(184,255,0,0.15);
+  }
+  .builder-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Lilita One', cursive;
+  }
+  .builder-badge:first-child .builder-avatar {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--brainrot-blue));
+  }
+  .builder-badge:last-child .builder-avatar {
+    background: linear-gradient(135deg, var(--neon-pink), var(--roblox-red));
+  }
+  .builder-name {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .builder-role {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* === FOOTER === */
+  .footer {
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 2.0s ease forwards;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 1px;
+  }
+  .footer .dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    background: var(--neon-cyan);
+    border-radius: 50%;
+    margin: 0 8px;
+    vertical-align: middle;
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+  .footer .dot:nth-child(2) { animation-delay: 0.3s; background: var(--neon-pink); }
+  .footer .dot:nth-child(3) { animation-delay: 0.6s; background: var(--neon-lime); }
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.8); opacity: 1; }
+  }
+
+  /* === SHARED ANIMATIONS === */
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === SPARKLE CURSOR TRAIL === */
+  .sparkle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 999;
+    font-size: 1rem;
+    animation: sparkleFade 0.8s ease forwards;
+  }
+  @keyframes sparkleFade {
+    0% { opacity: 1; transform: scale(1) translateY(0); }
+    100% { opacity: 0; transform: scale(0) translateY(-30px); }
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .cards { flex-direction: column; align-items: center; }
+    .card { width: 90%; max-width: 320px; }
+    .builders { flex-direction: column; align-items: center; }
+    .scene { height: 80px; }
+    .character { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-grid"></div>
+<div class="bg-blobs">
+  <div class="blob"></div>
+  <div class="blob"></div>
+  <div class="blob"></div>
+  <div class="blob"></div>
+</div>
+<div class="floating-emojis" id="floatingEmojis"></div>
+
+<!-- Main Content -->
+<div class="content">
+
+  <div class="banner">🔥 Something Epic Is Cooking 🔥</div>
+
+  <div class="title-wrapper">
+    <div class="title">COMING<br>SOON</div>
+    <div class="title-shadow" aria-hidden="true">COMING<br>SOON</div>
+  </div>
+
+  <p class="subtitle">
+    Built with 🧠 by <span class="name">Chris</span> &amp; <span class="name">Bobby</span>
+  </p>
+
+  <!-- Theme Cards -->
+  <div class="cards">
+    <div class="card card-brainrot">
+      <div class="card-bg"></div>
+      <div class="card-content">
+        <span class="card-icon">🐊</span>
+        <div class="card-title">Italian Brainrot</div>
+        <div class="card-desc">Tralalero Tralala! Bombardiro Crocodilo! The vibes will be immaculate. 🇮🇹✨</div>
+      </div>
+    </div>
+    <div class="card card-roblox">
+      <div class="card-bg"></div>
+      <div class="card-content">
+        <span class="card-icon">🟥</span>
+        <div class="card-title">Roblox</div>
+        <div class="card-desc">OOF! Experiences, games, and all things Roblox are incoming. Get ready. 🎮</div>
+      </div>
+    </div>
+    <div class="card card-gorilla">
+      <div class="card-bg"></div>
+      <div class="card-content">
+        <span class="card-icon">🦍</span>
+        <div class="card-title">Gorilla Tag</div>
+        <div class="card-desc">Monke mode activated. Swinging, tagging, and pure VR chaos. 🌿🏷️</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brainrot Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker" id="ticker">
+      <span class="ticker-item">🐊 Bombardiro Crocodilo</span>
+      <span class="ticker-item">🦍 Monke Mode</span>
+      <span class="ticker-item">🔥 Tralalero Tralala</span>
+      <span class="ticker-item">🟥 OOF</span>
+      <span class="ticker-item">🎵 Tung Tung Tung Sahur</span>
+      <span class="ticker-item">🌿 Tag!</span>
+      <span class="ticker-item">🐘 Lirili Larila</span>
+      <span class="ticker-item">🎮 Robux</span>
+      <span class="ticker-item">🦈 Brrr Brrr Patapim</span>
+      <span class="ticker-item">🐒 Swing Swing</span>
+      <span class="ticker-item">🍕 La Vacca Saturno Saturnita</span>
+      <span class="ticker-item">🏷️ You're It!</span>
+      <!-- Duplicate for seamless scroll -->
+      <span class="ticker-item">🐊 Bombardiro Crocodilo</span>
+      <span class="ticker-item">🦍 Monke Mode</span>
+      <span class="ticker-item">🔥 Tralalero Tralala</span>
+      <span class="ticker-item">🟥 OOF</span>
+      <span class="ticker-item">🎵 Tung Tung Tung Sahur</span>
+      <span class="ticker-item">🌿 Tag!</span>
+      <span class="ticker-item">🐘 Lirili Larila</span>
+      <span class="ticker-item">🎮 Robux</span>
+      <span class="ticker-item">🦈 Brrr Brrr Patapim</span>
+      <span class="ticker-item">🐒 Swing Swing</span>
+      <span class="ticker-item">🍕 La Vacca Saturno Saturnita</span>
+      <span class="ticker-item">🏷️ You're It!</span>
+    </div>
+  </div>
+
+  <!-- Animated Characters -->
+  <div class="scene">
+    <div class="character gorilla">🦍</div>
+    <div class="character roblox-char">🟥</div>
+    <div class="character brainrot-char">🐊</div>
+  </div>
+
+  <!-- Builder Badges -->
+  <div class="builders">
+    <a href="/chris.html" class="builder-badge">
+      <div class="builder-avatar">C</div>
+      <div>
+        <div class="builder-name">Chris</div>
+        <div class="builder-role">Co-Builder</div>
+      </div>
+    </a>
+    <a href="/bobby.html" class="builder-badge">
+      <div class="builder-avatar">B</div>
+      <div>
+        <div class="builder-name">Bobby</div>
+        <div class="builder-role">Co-Builder</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="footer">
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <br><br>
+    Stay tuned — the hype is real
+  </div>
+
+</div>
+
+<script>
+  // === Floating Emoji System ===
+  const emojiSets = ['🐊','🦍','🟥','🔥','🎮','🌿','🏷️','🍕','⭐','🎵','💎','🐒','🇮🇹','🧠'];
+  const container = document.getElementById('floatingEmojis');
+
+  function spawnEmoji() {
+    const el = document.createElement('div');
+    el.className = 'emoji';
+    el.textContent = emojiSets[Math.floor(Math.random() * emojiSets.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.fontSize = (1.2 + Math.random() * 1.8) + 'rem';
+    el.style.animationDuration = (8 + Math.random() * 12) + 's';
+    el.style.animationDelay = '0s';
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 22000);
+  }
+
+  // Initial burst
+  for (let i = 0; i < 12; i++) {
+    setTimeout(spawnEmoji, i * 400);
+  }
+  // Ongoing
+  setInterval(spawnEmoji, 1800);
+
+  // === Sparkle Cursor Trail ===
+  const sparkles = ['✨','⭐','💫','🌟'];
+  let lastSparkle = 0;
+  document.addEventListener('mousemove', (e) => {
+    const now = Date.now();
+    if (now - lastSparkle < 120) return;
+    lastSparkle = now;
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+    s.style.left = e.clientX + 'px';
+    s.style.top = e.clientY + 'px';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 800);
+  });
+
+  // === Card tilt on hover ===
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = `translateY(-8px) scale(1.03) perspective(600px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+</script>
+</body>
+</html>
