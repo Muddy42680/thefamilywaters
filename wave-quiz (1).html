@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transverse Wave Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#0a0e1a;--surface:#111827;--surface2:#1a2236;--accent:#00e5a0;
+    --accent2:#00b4d8;--accent3:#f472b6;--danger:#ef4444;--gold:#fbbf24;
+    --text:#e2e8f0;--muted:#64748b;--radius:16px;
+  }
+  body{
+    font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);
+    min-height:100vh;overflow-x:hidden;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -20%,rgba(0,229,160,.07),transparent),
+      radial-gradient(ellipse 60% 50% at 80% 100%,rgba(0,180,216,.05),transparent);
+  }
+  .container{max-width:960px;margin:0 auto;padding:24px 20px}
+
+  .header{text-align:center;margin-bottom:32px;animation:fadeDown .6s ease}
+  .header h1{
+    font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    letter-spacing:-1px;
+  }
+  .header p{color:var(--muted);margin-top:6px;font-size:.95rem;font-weight:300}
+
+  .score-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    background:var(--surface);border:1px solid rgba(255,255,255,.06);
+    border-radius:var(--radius);padding:14px 20px;margin-bottom:24px;
+    animation:fadeDown .6s ease .1s both;flex-wrap:wrap;
+  }
+  .score-bar .label{font-family:'Space Mono',monospace;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .score-bar .value{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent)}
+  .score-bar .attempt-val{color:var(--accent2)}
+  .score-bar .perfect{color:var(--gold)}
+
+  .diagram-card{
+    background:var(--surface);border:1px solid rgba(255,255,255,.06);
+    border-radius:var(--radius);padding:28px 24px 20px;margin-bottom:24px;
+    animation:fadeUp .6s ease .2s both;position:relative;overflow:hidden;
+  }
+  .diagram-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+  }
+  .diagram-card h2{font-size:1.1rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .diagram-card h2 span{font-size:1.2rem}
+
+  svg.wave-diagram{width:100%;height:auto;display:block}
+  .wave-line{fill:none;stroke:url(#waveGrad);stroke-width:3.5;stroke-linecap:round}
+  .eq-line{stroke:var(--muted);stroke-width:1;stroke-dasharray:8 6;opacity:.4}
+  .dim-line{stroke:var(--accent3);stroke-width:1.5;opacity:.7}
+  .dim-arrow{fill:var(--accent3);opacity:.7}
+
+  .question-panel{
+    background:var(--surface);border:1px solid rgba(255,255,255,.06);
+    border-radius:var(--radius);padding:24px;margin-bottom:24px;
+    animation:fadeUp .6s ease .3s both;
+  }
+  .q-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .q-counter{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);letter-spacing:1px}
+  .q-text{font-size:1.15rem;font-weight:500;line-height:1.5;margin-bottom:20px}
+  .q-text em{color:var(--accent);font-style:normal;font-weight:700}
+
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:500px){.options{grid-template-columns:1fr}}
+  .opt-btn{
+    background:var(--surface2);border:2px solid rgba(255,255,255,.06);
+    border-radius:12px;padding:12px 16px;font-family:'Outfit',sans-serif;
+    font-size:.95rem;color:var(--text);cursor:pointer;transition:all .2s;
+    text-align:left;position:relative;overflow:hidden;
+  }
+  .opt-btn:hover{border-color:var(--accent);background:rgba(0,229,160,.06)}
+  .opt-btn.correct-reveal{border-color:var(--accent);background:rgba(0,229,160,.15);color:var(--accent)}
+  .opt-btn.wrong-reveal{border-color:var(--danger);background:rgba(239,68,68,.1);color:var(--danger)}
+  .opt-btn:disabled{cursor:default}
+
+  .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+  .btn{
+    font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:600;
+    padding:12px 32px;border:none;border-radius:12px;cursor:pointer;transition:all .25s;
+  }
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--bg)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,229,160,.3)}
+  .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid rgba(255,255,255,.1)}
+  .btn-secondary:hover{border-color:var(--accent)}
+  .btn-study{
+    background:linear-gradient(135deg,#a78bfa,var(--accent3));color:#fff;border:none;
+  }
+  .btn-study:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(167,139,250,.35)}
+  .btn:disabled{opacity:.4;cursor:default;transform:none!important;box-shadow:none!important}
+
+  .result-overlay{
+    position:fixed;inset:0;background:rgba(10,14,26,.85);backdrop-filter:blur(12px);
+    display:flex;align-items:center;justify-content:center;z-index:100;
+    animation:fadeIn .3s ease;
+  }
+  .result-card{
+    background:var(--surface);border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;padding:40px;text-align:center;max-width:440px;width:90%;
+    animation:popIn .4s ease;
+  }
+  .result-card .emoji{font-size:3.5rem;margin-bottom:16px}
+  .result-card h2{font-size:1.6rem;font-weight:700;margin-bottom:8px}
+  .result-card .sub{color:var(--muted);margin-bottom:24px;line-height:1.6}
+  .result-card .final-score{font-family:'Space Mono',monospace;font-size:2.4rem;font-weight:700;margin-bottom:24px}
+  .result-card .final-score.perfect{color:var(--gold)}
+  .result-card .final-score.retry{color:var(--danger)}
+
+  .feedback{text-align:center;margin-top:14px;font-weight:600;font-size:1rem;animation:fadeIn .3s ease}
+  .feedback.correct{color:var(--accent)}
+  .feedback.wrong{color:var(--danger)}
+
+  .instructions{
+    background:var(--surface2);border-radius:12px;padding:14px 18px;
+    font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:20px;
+    border-left:3px solid var(--accent);
+  }
+
+  .progress-dots{display:flex;gap:6px;align-items:center}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--surface2);border:1.5px solid rgba(255,255,255,.1);transition:all .3s}
+  .dot.active{border-color:var(--accent2);background:var(--accent2);box-shadow:0 0 8px rgba(0,180,216,.4)}
+  .dot.done-correct{background:var(--accent);border-color:var(--accent)}
+  .dot.done-wrong{background:var(--danger);border-color:var(--danger)}
+
+  /* ── Study Sheet Overlay ── */
+  .study-overlay{
+    position:fixed;inset:0;background:rgba(10,14,26,.92);backdrop-filter:blur(18px);
+    display:flex;align-items:flex-start;justify-content:center;z-index:200;
+    overflow-y:auto;padding:32px 16px;animation:fadeIn .3s ease;
+  }
+  .study-sheet{
+    background:var(--surface);border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;max-width:900px;width:100%;padding:36px 28px 32px;
+    animation:popIn .4s ease;position:relative;
+  }
+  .study-sheet::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:4px;
+    background:linear-gradient(90deg,#a78bfa,var(--accent3),var(--accent),var(--accent2));
+    border-radius:20px 20px 0 0;
+  }
+  .study-sheet h2{
+    font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:6px;
+    background:linear-gradient(135deg,#a78bfa,var(--accent3));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .study-sub{text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:24px}
+
+  .def-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:600px){.def-grid{grid-template-columns:1fr}}
+  .def-card{
+    background:var(--surface2);border-radius:14px;padding:16px 18px;
+    border-left:4px solid var(--accent);transition:transform .2s;
+  }
+  .def-card:hover{transform:translateY(-2px)}
+  .def-card .def-term{font-weight:700;font-size:1rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .def-card .def-tag{
+    display:inline-block;font-family:'Space Mono',monospace;font-size:.65rem;
+    font-weight:700;padding:2px 7px;border-radius:5px;color:var(--bg);
+  }
+  .def-card .def-body{font-size:.88rem;color:var(--muted);line-height:1.55}
+  .def-card:nth-child(1){border-color:#00e5a0} .def-card:nth-child(1) .def-tag{background:#00e5a0}
+  .def-card:nth-child(2){border-color:#00b4d8} .def-card:nth-child(2) .def-tag{background:#00b4d8}
+  .def-card:nth-child(3){border-color:#f472b6} .def-card:nth-child(3) .def-tag{background:#f472b6}
+  .def-card:nth-child(4){border-color:#fbbf24} .def-card:nth-child(4) .def-tag{background:#fbbf24}
+  .def-card:nth-child(5){border-color:#a78bfa} .def-card:nth-child(5) .def-tag{background:#a78bfa}
+  .def-card:nth-child(6){border-color:#fb923c} .def-card:nth-child(6) .def-tag{background:#fb923c}
+
+  .study-close-area{text-align:center;margin-top:28px}
+  .study-warn{
+    display:inline-block;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);
+    border-radius:10px;padding:10px 18px;font-size:.82rem;color:#fca5a5;margin-bottom:16px;
+  }
+
+  @keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>⚡ Transverse Wave Quiz</h1>
+    <p>Identify all parts of the wave — perfect score required to pass!</p>
+  </div>
+
+  <div class="score-bar">
+    <div><div class="label">Score</div><div class="value" id="score">0 / 0</div></div>
+    <div><div class="label">Attempt</div><div class="attempt-val value" id="attempt">1</div></div>
+    <div><div class="label">Best</div><div class="perfect value" id="best">—</div></div>
+    <div>
+      <button class="btn btn-study" onclick="openStudySheet()" title="View study sheet (resets quiz)">📖 Study Sheet</button>
+    </div>
+  </div>
+
+  <!-- Quiz Diagram -->
+  <div class="diagram-card">
+    <h2><span>🌊</span> Transverse Wave Diagram</h2>
+    <svg class="wave-diagram" viewBox="0 0 800 340" id="waveSvg">
+      <defs>
+        <linearGradient id="waveGrad" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#00e5a0"/>
+          <stop offset="50%" stop-color="#00b4d8"/>
+          <stop offset="100%" stop-color="#f472b6"/>
+        </linearGradient>
+      </defs>
+      <line class="eq-line" x1="40" y1="170" x2="760" y2="170"/>
+      <text x="20" y="174" font-family="Space Mono,monospace" font-size="9" fill="#64748b" text-anchor="middle" transform="rotate(-90,20,170)">rest</text>
+      <path class="wave-line" id="wavePath"/>
+      <line class="dim-line" x1="200" y1="170" x2="200" y2="70"/>
+      <polygon class="dim-arrow" points="197,76 200,66 203,76"/>
+      <polygon class="dim-arrow" points="197,164 200,174 203,164"/>
+      <line class="dim-line" x1="200" y1="52" x2="600" y2="52"/>
+      <polygon class="dim-arrow" points="206,49 196,52 206,55"/>
+      <polygon class="dim-arrow" points="594,49 604,52 594,55"/>
+    </svg>
+  </div>
+
+  <!-- Question Panel -->
+  <div class="question-panel" id="questionPanel">
+    <div class="instructions" id="instructions">
+      Look at the wave diagram above. For each question, select the correct answer to identify the labeled part or measurement. You must get <strong>every question correct</strong> to pass!
+    </div>
+    <div class="q-header">
+      <div class="q-counter" id="qCounter">QUESTION 1 / 7</div>
+      <div class="progress-dots" id="progressDots"></div>
+    </div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="actions" style="margin-top:18px">
+      <button class="btn btn-primary" id="nextBtn" disabled onclick="nextQuestion()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Result Overlay -->
+<div class="result-overlay" id="resultOverlay" style="display:none">
+  <div class="result-card">
+    <div class="emoji" id="resEmoji"></div>
+    <h2 id="resTitle"></h2>
+    <p class="sub" id="resSub"></p>
+    <div class="final-score" id="resFinalScore"></div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" id="resBtn" onclick="handleResult()"></button>
+      <button class="btn btn-study" id="resStudyBtn" onclick="openStudySheet();document.getElementById('resultOverlay').style.display='none'">📖 Study First</button>
+    </div>
+  </div>
+</div>
+
+<!-- Study Sheet Overlay -->
+<div class="study-overlay" id="studyOverlay" style="display:none">
+  <div class="study-sheet">
+    <h2>📖 Transverse Wave Study Sheet</h2>
+    <p class="study-sub">Master every label before you retake the quiz</p>
+
+    <!-- Fully labeled study diagram -->
+    <svg class="wave-diagram" viewBox="0 0 800 400">
+      <defs>
+        <linearGradient id="sg" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#00e5a0"/>
+          <stop offset="50%" stop-color="#00b4d8"/>
+          <stop offset="100%" stop-color="#f472b6"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Equilibrium -->
+      <line x1="40" y1="200" x2="760" y2="200" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="8 6" opacity=".55"/>
+      <rect x="660" y="204" width="108" height="18" rx="4" fill="#a78bfa" opacity=".85"/>
+      <text x="714" y="216" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" font-weight="700" fill="#0a0e1a">EQUILIBRIUM (E)</text>
+
+      <!-- Wave -->
+      <path id="studyWavePath" fill="none" stroke="url(#sg)" stroke-width="3.5" stroke-linecap="round"/>
+
+      <!-- Crest -->
+      <circle cx="200" cy="100" r="11" fill="none" stroke="#00e5a0" stroke-width="2.5"/>
+      <line x1="200" y1="88" x2="200" y2="52" stroke="#00e5a0" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <rect x="160" y="36" width="80" height="20" rx="5" fill="#00e5a0" opacity=".9"/>
+      <text x="200" y="50" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" font-weight="700" fill="#0a0e1a">CREST (A)</text>
+
+      <!-- Trough -->
+      <circle cx="400" cy="300" r="11" fill="none" stroke="#00b4d8" stroke-width="2.5"/>
+      <line x1="400" y1="312" x2="400" y2="348" stroke="#00b4d8" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <rect x="352" y="352" width="96" height="20" rx="5" fill="#00b4d8" opacity=".9"/>
+      <text x="400" y="366" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" font-weight="700" fill="#0a0e1a">TROUGH (B)</text>
+
+      <!-- Amplitude arrow -->
+      <line x1="110" y1="200" x2="110" y2="100" stroke="#f472b6" stroke-width="2"/>
+      <polygon points="107,106 110,96 113,106" fill="#f472b6"/>
+      <polygon points="107,194 110,204 113,194" fill="#f472b6"/>
+      <rect x="42" y="142" width="136" height="20" rx="5" fill="#f472b6" opacity=".9"/>
+      <text x="110" y="156" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" font-weight="700" fill="#0a0e1a">AMPLITUDE (C)</text>
+
+      <!-- Wavelength arrow -->
+      <line x1="200" y1="24" x2="600" y2="24" stroke="#fbbf24" stroke-width="2"/>
+      <polygon points="206,21 196,24 206,27" fill="#fbbf24"/>
+      <polygon points="594,21 604,24 594,27" fill="#fbbf24"/>
+      <line x1="200" y1="36" x2="200" y2="24" stroke="#fbbf24" stroke-width="1" stroke-dasharray="3 2" opacity=".5"/>
+      <line x1="600" y1="88" x2="600" y2="24" stroke="#fbbf24" stroke-width="1" stroke-dasharray="3 2" opacity=".5"/>
+      <rect x="340" y="10" width="120" height="20" rx="5" fill="#fbbf24" opacity=".9"/>
+      <text x="400" y="24" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" font-weight="700" fill="#0a0e1a">WAVELENGTH (D)</text>
+
+      <!-- Second crest -->
+      <circle cx="600" cy="100" r="11" fill="none" stroke="#fb923c" stroke-width="2.5"/>
+      <line x1="600" y1="88" x2="600" y2="62" stroke="#fb923c" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <rect x="544" y="46" width="112" height="20" rx="5" fill="#fb923c" opacity=".9"/>
+      <text x="600" y="60" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" font-weight="700" fill="#0a0e1a">2ND CREST (F)</text>
+    </svg>
+
+    <!-- Definition Cards -->
+    <div class="def-grid">
+      <div class="def-card">
+        <div class="def-term"><span class="def-tag">A</span> Crest</div>
+        <div class="def-body">The <strong>highest point</strong> of the wave — the maximum displacement <em>above</em> the equilibrium (rest) position. Each crest represents the peak of a wave cycle.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term"><span class="def-tag">B</span> Trough</div>
+        <div class="def-body">The <strong>lowest point</strong> of the wave — the maximum displacement <em>below</em> the equilibrium position. Troughs are the "valleys" of the wave.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term"><span class="def-tag">C</span> Amplitude</div>
+        <div class="def-body">The <strong>maximum displacement</strong> from the rest position to a crest or trough. Larger amplitude = more energy. It's always measured from the midline, not crest-to-trough.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term"><span class="def-tag">D</span> Wavelength (λ)</div>
+        <div class="def-body">The <strong>distance of one complete wave cycle</strong>, measured crest-to-crest or trough-to-trough. Represented by the Greek letter lambda (λ). Related to frequency by: v = fλ.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term"><span class="def-tag">E</span> Equilibrium Position</div>
+        <div class="def-body">The <strong>rest (undisturbed) position</strong> — the horizontal midline. When no wave is present, all points sit here. All displacement is measured relative to this line.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term"><span class="def-tag">F</span> Wave Repetition</div>
+        <div class="def-body">Transverse waves are <strong>periodic</strong>: crests, troughs, and all features repeat at regular intervals of one wavelength. Point F is identical to Point A, one wavelength later.</div>
+      </div>
+    </div>
+
+    <div class="study-close-area">
+      <div class="study-warn">⚠️ Closing the study sheet will reset your quiz progress so you can start fresh.</div><br>
+      <button class="btn btn-primary" onclick="closeStudySheet()">✕ Close &amp; Restart Quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Wave geometry ──
+const W=800,H=340,midY=170,amp=100,startX=40,endX=760,waveLen=400;
+
+function buildWavePath(svgMidY,svgAmp,elId){
+  let d='';
+  for(let x=startX;x<=endX;x++){
+    const y=svgMidY-svgAmp*Math.sin(2*Math.PI*(x-startX)/waveLen);
+    d+=(x===startX?`M${x},${y}`:` L${x},${y}`);
+  }
+  document.getElementById(elId).setAttribute('d',d);
+}
+buildWavePath(midY,amp,'wavePath');
+buildWavePath(200,100,'studyWavePath');
+
+// ── Markers on quiz diagram ──
+const markers=[
+  {id:'crest',x:200,y:midY-amp,label:'A',color:'#00e5a0'},
+  {id:'trough',x:400,y:midY+amp,label:'B',color:'#00b4d8'},
+  {id:'amplitude',x:200,y:midY-amp/2,label:'C',color:'#f472b6',isArrow:true},
+  {id:'wavelength',x:400,y:52,label:'D',color:'#fbbf24',isArrow:true},
+  {id:'equilibrium',x:500,y:midY,label:'E',color:'#a78bfa'},
+  {id:'compression_point',x:600,y:midY-amp,label:'F',color:'#fb923c'},
+  {id:'rest_to_trough',x:400,y:midY+amp/2,label:'G',color:'#38bdf8',isArrow:true},
+];
+const svg=document.getElementById('waveSvg');
+markers.forEach(m=>{
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.id='marker-'+m.id;
+  if(!m.isArrow){
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',m.x);c.setAttribute('cy',m.y);c.setAttribute('r',10);
+    c.setAttribute('fill','rgba(0,0,0,.5)');c.setAttribute('stroke',m.color);c.setAttribute('stroke-width',2.5);
+    g.appendChild(c);
+  }
+  const off=m.y<midY?-22:18;
+  const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+  r.setAttribute('x',m.x-11);r.setAttribute('y',m.y+off-10);
+  r.setAttribute('width',22);r.setAttribute('height',18);r.setAttribute('rx',4);
+  r.setAttribute('fill',m.color);r.setAttribute('opacity',.9);
+  const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+  t.setAttribute('x',m.x);t.setAttribute('y',m.y+off+3);
+  t.setAttribute('text-anchor','middle');t.setAttribute('font-family','Space Mono,monospace');
+  t.setAttribute('font-size','11');t.setAttribute('font-weight','700');t.setAttribute('fill','#0a0e1a');
+  t.textContent=m.label;
+  g.appendChild(r);g.appendChild(t);svg.appendChild(g);
+});
+
+// ── Questions ──
+const questions=[
+  {text:'Point <em>A</em> marks the highest point of the wave. What is this called?',marker:'crest',options:['Crest','Trough','Amplitude','Node'],answer:0},
+  {text:'Point <em>B</em> marks the lowest point of the wave. What is this called?',marker:'trough',options:['Wavelength','Crest','Trough','Frequency'],answer:2},
+  {text:'The vertical arrow <em>C</em> shows the maximum displacement from rest. What does it measure?',marker:'amplitude',options:['Wavelength','Period','Amplitude','Frequency'],answer:2},
+  {text:'The horizontal arrow <em>D</em> spans one full cycle of the wave. What does it measure?',marker:'wavelength',options:['Amplitude','Wavelength','Period','Frequency'],answer:1},
+  {text:'The dashed line at point <em>E</em> represents the wave\'s undisturbed position. What is it called?',marker:'equilibrium',options:['Crest line','Equilibrium (rest) position','Amplitude line','Phase line'],answer:1},
+  {text:'Point <em>F</em> is the peak of the second cycle, identical in height to point A. What does this tell us?',marker:'compression_point',options:['The wave is getting stronger','The wave repeats — crests recur each wavelength','The frequency is increasing','The wave is compressing'],answer:1},
+  {text:'Arrow <em>G</em> shows displacement from rest down to the trough. Its length equals arrow C. This confirms the wave\'s _____ is the same above and below the rest position.',marker:'rest_to_trough',options:['Wavelength','Period','Frequency','Amplitude'],answer:3},
+];
+
+// ── State ──
+let currentQ=0,correctCount=0,attemptNum=1,bestScore=null,answered=false,results=[];
+
+function init(){
+  currentQ=0;correctCount=0;answered=false;results=[];
+  document.getElementById('score').textContent=`0 / ${questions.length}`;
+  document.getElementById('attempt').textContent=attemptNum;
+  document.getElementById('instructions').style.display=attemptNum===1?'block':'none';
+  buildDots();showQuestion();
+}
+function buildDots(){
+  const c=document.getElementById('progressDots');c.innerHTML='';
+  questions.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.id='dot-'+i;c.appendChild(d)});
+}
+function showQuestion(){
+  const q=questions[currentQ];
+  document.getElementById('qCounter').textContent=`QUESTION ${currentQ+1} / ${questions.length}`;
+  document.getElementById('qText').innerHTML=q.text;
+  document.getElementById('feedback').textContent='';
+  document.getElementById('nextBtn').disabled=true;answered=false;
+  markers.forEach(m=>{document.getElementById('marker-'+m.id).style.opacity=m.id===q.marker?1:.35});
+  const oc=document.getElementById('options');oc.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const b=document.createElement('button');b.className='opt-btn';b.textContent=opt;
+    b.onclick=()=>pick(i,b);b.id='opt-'+i;oc.appendChild(b);
+  });
+  questions.forEach((_,i)=>{
+    const d=document.getElementById('dot-'+i);d.className='dot';
+    if(i<currentQ)d.classList.add(results[i]?'done-correct':'done-wrong');
+    if(i===currentQ)d.classList.add('active');
+  });
+}
+function pick(idx,btn){
+  if(answered)return;answered=true;
+  const q=questions[currentQ],ok=idx===q.answer;
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  if(ok){correctCount++;btn.classList.add('correct-reveal');
+    document.getElementById('feedback').className='feedback correct';
+    document.getElementById('feedback').textContent='✓ Correct!';results.push(true);
+  }else{btn.classList.add('wrong-reveal');
+    document.getElementById('opt-'+q.answer).classList.add('correct-reveal');
+    document.getElementById('feedback').className='feedback wrong';
+    document.getElementById('feedback').textContent='✗ Incorrect — the correct answer is highlighted.';results.push(false);
+  }
+  document.getElementById('score').textContent=`${correctCount} / ${questions.length}`;
+  document.getElementById('nextBtn').disabled=false;
+  document.getElementById('nextBtn').textContent=currentQ===questions.length-1?'See Results':'Next →';
+}
+function nextQuestion(){currentQ++;if(currentQ>=questions.length){showResults();return}showQuestion()}
+function showResults(){
+  const perfect=correctCount===questions.length;
+  if(bestScore===null||correctCount>bestScore)bestScore=correctCount;
+  document.getElementById('best').textContent=`${bestScore} / ${questions.length}`;
+  document.getElementById('resultOverlay').style.display='flex';
+  document.getElementById('resEmoji').textContent=perfect?'🏆':'🔄';
+  document.getElementById('resTitle').textContent=perfect?'Perfect Score!':'Not Quite!';
+  document.getElementById('resSub').textContent=perfect
+    ?'Amazing! You identified every part of the transverse wave correctly.'
+    :`You got ${correctCount} out of ${questions.length} correct. You need a perfect score to pass — review the study sheet and try again!`;
+  const s=document.getElementById('resFinalScore');
+  s.textContent=`${correctCount} / ${questions.length}`;
+  s.className='final-score '+(perfect?'perfect':'retry');
+  document.getElementById('resBtn').textContent=perfect?'🎉 Play Again':'🔁 Retake Quiz';
+  document.getElementById('resStudyBtn').style.display=perfect?'none':'inline-block';
+}
+function handleResult(){
+  document.getElementById('resultOverlay').style.display='none';
+  attemptNum++;resetMarkers();init();
+}
+function resetMarkers(){markers.forEach(m=>{document.getElementById('marker-'+m.id).style.opacity=1})}
+
+// ── Study Sheet ──
+function openStudySheet(){
+  document.getElementById('studyOverlay').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeStudySheet(){
+  document.getElementById('studyOverlay').style.display='none';
+  document.body.style.overflow='';
+  attemptNum++;resetMarkers();init();
+}
+
+init();
+</script>
+</body>
+</html>
