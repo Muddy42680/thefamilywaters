@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chris — Coming Soon</title>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Fredoka:wght@400;600;700&family=Bangers&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky-top: #0a0e27;
+    --sky-mid: #0f1b4d;
+    --sky-glow: #1a3a8a;
+    --cloud-white: #e8f0ff;
+    --jet-silver: #c0cfdf;
+    --thrust-orange: #ff6a00;
+    --thrust-yellow: #ffc107;
+    --contrail-blue: #64b5f6;
+    --neon-cyan: #00f0ff;
+    --runway-green: #00e676;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 40%, var(--sky-glow) 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Fredoka', sans-serif;
+    color: #fff;
+    position: relative;
+  }
+
+  /* === STARS === */
+  .stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.5); }
+  }
+
+  /* === CLOUDS === */
+  .clouds {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cloud {
+    position: absolute;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: cloudDrift linear infinite;
+  }
+  @keyframes cloudDrift {
+    0% { transform: translateX(110vw); }
+    100% { transform: translateX(-30vw); }
+  }
+
+  /* === AIRPLANE === */
+  .airplane-container {
+    position: fixed;
+    z-index: 2;
+    pointer-events: none;
+    animation: flyAcross 14s linear infinite;
+    top: 18%;
+  }
+  @keyframes flyAcross {
+    0% { left: -15%; transform: rotate(-2deg); }
+    25% { transform: rotate(1deg); }
+    50% { transform: rotate(-1deg); }
+    75% { transform: rotate(2deg); }
+    100% { left: 115%; transform: rotate(-2deg); }
+  }
+
+  .airplane {
+    font-size: 4rem;
+    filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.4));
+    animation: planeWobble 2s ease-in-out infinite;
+  }
+  @keyframes planeWobble {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .contrail {
+    position: absolute;
+    right: 55px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 250px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5));
+    border-radius: 2px;
+    animation: contrailPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes contrailPulse {
+    0%, 100% { opacity: 0.3; width: 200px; }
+    50% { opacity: 0.7; width: 280px; }
+  }
+
+  /* === SECOND PLANE (smaller, background) === */
+  .airplane-bg {
+    position: fixed;
+    z-index: 1;
+    pointer-events: none;
+    animation: flyAcrossBg 22s linear infinite;
+    top: 45%;
+    font-size: 1.8rem;
+    opacity: 0.3;
+    filter: blur(1px);
+  }
+  @keyframes flyAcrossBg {
+    0% { left: 115%; }
+    100% { left: -10%; }
+  }
+
+  /* === RADAR PING === */
+  .radar {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    z-index: 5;
+    opacity: 0.5;
+  }
+  .radar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 240, 255, 0.1);
+    animation: radarPing 3s ease-out infinite;
+  }
+  .radar::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-cyan), transparent);
+    transform-origin: left center;
+    animation: radarSweep 3s linear infinite;
+  }
+  @keyframes radarPing {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(2); opacity: 0; }
+  }
+  @keyframes radarSweep {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .radar-dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--neon-cyan);
+    border-radius: 50%;
+    top: 30%;
+    left: 60%;
+    animation: radarBlink 3s ease-in-out infinite;
+    box-shadow: 0 0 6px var(--neon-cyan);
+  }
+  @keyframes radarBlink {
+    0%, 40%, 100% { opacity: 0; }
+    50%, 60% { opacity: 1; }
+  }
+
+  /* === CONTENT === */
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  /* === PILOT BADGE === */
+  .pilot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    background: rgba(0, 240, 255, 0.06);
+    backdrop-filter: blur(8px);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeSlideDown 0.8s 0.2s ease forwards;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--neon-cyan);
+  }
+  .pilot-badge .wing { font-size: 1.2rem; }
+
+  /* === TITLE === */
+  .title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeSlideDown 1s 0.4s ease forwards;
+    text-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+  }
+  .title .line1 {
+    display: block;
+    background: linear-gradient(90deg, var(--cloud-white), var(--contrail-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .title .line2 {
+    display: block;
+    background: linear-gradient(90deg, var(--thrust-orange), var(--thrust-yellow), var(--neon-cyan));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleShimmer 4s ease infinite;
+  }
+  @keyframes titleShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .tagline {
+    font-family: 'Righteous', cursive;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeSlideDown 1s 0.6s ease forwards;
+  }
+
+  /* === RUNWAY DIVIDER === */
+  .runway {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 0.8s ease forwards;
+  }
+  .runway-dash {
+    width: 30px;
+    height: 4px;
+    background: var(--thrust-yellow);
+    border-radius: 2px;
+    opacity: 0.6;
+    animation: runwayLight 2s ease-in-out infinite;
+  }
+  .runway-dash:nth-child(2) { animation-delay: 0.2s; }
+  .runway-dash:nth-child(3) { animation-delay: 0.4s; }
+  .runway-dash:nth-child(4) { animation-delay: 0.6s; }
+  .runway-dash:nth-child(5) { animation-delay: 0.8s; }
+  .runway-dash:nth-child(6) { animation-delay: 1.0s; }
+  .runway-dash:nth-child(7) { animation-delay: 1.2s; }
+  @keyframes runwayLight {
+    0%, 100% { opacity: 0.3; transform: scaleX(1); }
+    50% { opacity: 1; transform: scaleX(1.3); }
+  }
+
+  /* === INFO CARDS === */
+  .flight-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.0s ease forwards;
+  }
+  .info-card {
+    padding: 1.2rem 1.8rem;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    min-width: 160px;
+    transition: all 0.3s ease;
+  }
+  .info-card:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 240, 255, 0.05);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 240, 255, 0.1);
+  }
+  .info-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 0.4rem;
+  }
+  .info-value {
+    font-family: 'Righteous', cursive;
+    font-size: 1.2rem;
+    color: var(--neon-cyan);
+  }
+
+  /* === BOARDING PASS === */
+  .boarding-pass {
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 1.5rem 2.5rem;
+    margin-bottom: 2.5rem;
+    max-width: 420px;
+    position: relative;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.2s ease forwards;
+  }
+  .boarding-pass::before,
+  .boarding-pass::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: var(--sky-mid);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .boarding-pass::before { left: -13px; }
+  .boarding-pass::after { right: -13px; }
+
+  .boarding-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 0.3rem;
+  }
+  .boarding-name {
+    font-family: 'Righteous', cursive;
+    font-size: 1.8rem;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--contrail-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.2rem;
+  }
+  .boarding-dest {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* === BACK LINK === */
+  .back-link {
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.4s ease forwards;
+  }
+  .back-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 0.6rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.3s ease;
+  }
+  .back-link a:hover {
+    color: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+    background: rgba(0, 240, 255, 0.05);
+  }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .flight-info { flex-direction: column; align-items: center; }
+    .radar { display: none; }
+    .boarding-pass { margin-left: 1rem; margin-right: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Clouds -->
+<div class="clouds">
+  <div class="cloud" style="width:300px;height:80px;top:25%;animation-duration:25s;"></div>
+  <div class="cloud" style="width:400px;height:100px;top:55%;animation-duration:35s;animation-delay:-10s;"></div>
+  <div class="cloud" style="width:250px;height:70px;top:75%;animation-duration:28s;animation-delay:-18s;"></div>
+  <div class="cloud" style="width:350px;height:90px;top:10%;animation-duration:32s;animation-delay:-5s;"></div>
+</div>
+
+<!-- Airplanes -->
+<div class="airplane-container">
+  <div class="contrail"></div>
+  <div class="airplane">✈️</div>
+</div>
+<div class="airplane-bg">🛩️</div>
+
+<!-- Radar -->
+<div class="radar">
+  <div class="radar-dot"></div>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+  <div class="pilot-badge">
+    <span class="wing">🛫</span>
+    <span>Captain Chris</span>
+    <span class="wing">🛬</span>
+  </div>
+
+  <div class="title">
+    <span class="line1">This Page Is</span>
+    <span class="line2">About To Take Off</span>
+  </div>
+
+  <p class="tagline">Fasten your seatbelt — something epic is on approach 🛫</p>
+
+  <div class="runway">
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+  </div>
+
+  <div class="flight-info">
+    <div class="info-card">
+      <div class="info-label">Flight Status</div>
+      <div class="info-value">✈️ Boarding</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Destination</div>
+      <div class="info-value">🌍 Awesome</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">ETA</div>
+      <div class="info-value">🕐 Soon™</div>
+    </div>
+  </div>
+
+  <div class="boarding-pass">
+    <div class="boarding-label">Boarding Pass — First Class</div>
+    <div class="boarding-name">Chris</div>
+    <div class="boarding-dest">Cleared for takeoff · Gate C1 · Seat 1A</div>
+  </div>
+
+  <div class="back-link">
+    <a href="/">← Back to Home Base</a>
+  </div>
+
+</div>
+
+<script>
+  // Generate stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 60 + '%';
+    star.style.animationDelay = (Math.random() * 3) + 's';
+    star.style.animationDuration = (2 + Math.random() * 3) + 's';
+    star.style.width = star.style.height = (1 + Math.random() * 2) + 'px';
+    starsEl.appendChild(star);
+  }
+</script>
+</body>
+</html>

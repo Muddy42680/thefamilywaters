@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bobby — Coming Soon</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Fredoka:wght@400;600;700&family=Bangers&family=Bungee+Inline&family=Lilita+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --italia-green: #009246;
+    --italia-white: #f5f5f0;
+    --italia-red: #ce2b37;
+    --brainrot-gold: #ffd700;
+    --brainrot-purple: #9c27b0;
+    --brainrot-blue: #1e90ff;
+    --bg-dark: #0d0a1a;
+    --neon-lime: #b8ff00;
+    --chaos-pink: #ff2d95;
+    --chaos-orange: #ff6a00;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Fredoka', sans-serif;
+    color: #fff;
+    position: relative;
+  }
+
+  /* === ITALIAN FLAG STRIPE (top) === */
+  .flag-stripe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--italia-green) 33%, var(--italia-white) 33% 66%, var(--italia-red) 66%);
+    z-index: 100;
+  }
+
+  /* === PASTA RAIN === */
+  .pasta-rain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .pasta {
+    position: absolute;
+    animation: pastaFall linear infinite;
+    opacity: 0;
+  }
+  @keyframes pastaFall {
+    0% { transform: translateY(-5vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* === SPINNING BACKGROUND SHAPES === */
+  .bg-shapes {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+    animation: shapeFloat 15s ease-in-out infinite alternate;
+  }
+  .shape:nth-child(1) { width: 500px; height: 500px; background: var(--italia-green); top: -10%; left: -5%; }
+  .shape:nth-child(2) { width: 450px; height: 450px; background: var(--italia-red); bottom: -15%; right: -5%; animation-delay: -5s; }
+  .shape:nth-child(3) { width: 350px; height: 350px; background: var(--brainrot-purple); top: 40%; left: 60%; animation-delay: -8s; }
+  .shape:nth-child(4) { width: 300px; height: 300px; background: var(--brainrot-gold); bottom: 20%; left: 10%; animation-delay: -12s; }
+  @keyframes shapeFloat {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(40px, -30px) scale(1.15); }
+  }
+
+  /* === CONTENT === */
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  /* === BOBBY BADGE === */
+  .bobby-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.8rem;
+    border-radius: 50px;
+    background: linear-gradient(90deg, var(--italia-green), var(--italia-white), var(--italia-red));
+    background-size: 200% 100%;
+    animation: flagWave 3s ease infinite, fadeSlideDown 0.8s 0.2s ease forwards;
+    opacity: 0;
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: var(--bg-dark);
+  }
+  @keyframes flagWave {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* === TITLE === */
+  .title-area {
+    margin: 1.5rem 0 0.5rem;
+    opacity: 0;
+    animation: fadeSlideDown 1s 0.4s ease forwards;
+  }
+  .title-bobby {
+    font-family: 'Bungee Inline', cursive;
+    font-size: clamp(2.8rem, 9vw, 6rem);
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--brainrot-gold), var(--chaos-orange), var(--chaos-pink), var(--brainrot-purple), var(--brainrot-blue), var(--neon-lime));
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: brainrotGradient 6s ease infinite;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+  }
+  @keyframes brainrotGradient {
+    0%, 100% { background-position: 0% 50%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+  }
+
+  .subtitle {
+    font-family: 'Pacifico', cursive;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeSlideDown 1s 0.6s ease forwards;
+  }
+  .subtitle .highlight {
+    color: var(--brainrot-gold);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+  }
+
+  /* === BRAINROT CHARACTERS === */
+  .brainrot-stage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    max-width: 800px;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 0.8s ease forwards;
+  }
+
+  .creature-card {
+    padding: 1.2rem 1.5rem;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(6px);
+    min-width: 140px;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .creature-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,215,0,0.05));
+    pointer-events: none;
+  }
+  .creature-card:hover {
+    transform: translateY(-6px) scale(1.05) rotate(-1deg);
+    border-color: var(--brainrot-gold);
+    background: rgba(255,215,0,0.06);
+    box-shadow: 0 10px 30px rgba(255,215,0,0.15);
+  }
+
+  .creature-emoji {
+    font-size: 2.8rem;
+    display: block;
+    margin-bottom: 0.4rem;
+    animation: creatureBop 2.5s ease-in-out infinite;
+  }
+  .creature-card:nth-child(2) .creature-emoji { animation-delay: -0.5s; }
+  .creature-card:nth-child(3) .creature-emoji { animation-delay: -1.0s; }
+  .creature-card:nth-child(4) .creature-emoji { animation-delay: -1.5s; }
+  .creature-card:nth-child(5) .creature-emoji { animation-delay: -2.0s; }
+  .creature-card:nth-child(6) .creature-emoji { animation-delay: -0.3s; }
+
+  @keyframes creatureBop {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    30% { transform: translateY(-10px) rotate(-8deg); }
+    60% { transform: translateY(-5px) rotate(8deg); }
+  }
+
+  .creature-name {
+    font-family: 'Bangers', cursive;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    color: var(--brainrot-gold);
+  }
+
+  /* === SCROLLING TICKER === */
+  .ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.0s ease forwards;
+  }
+  .ticker {
+    display: flex;
+    width: max-content;
+    animation: tickerScroll 25s linear infinite;
+    gap: 1.5rem;
+  }
+  @keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .ticker-word {
+    font-family: 'Lilita One', cursive;
+    font-size: 2rem;
+    white-space: nowrap;
+    opacity: 0.12;
+    transition: opacity 0.3s;
+  }
+  .ticker-word:hover { opacity: 0.4; }
+  .ticker-word:nth-child(odd) { color: var(--italia-green); }
+  .ticker-word:nth-child(even) { color: var(--italia-red); }
+
+  /* === MESSAGE BOX === */
+  .message-box {
+    max-width: 500px;
+    padding: 2rem 2.5rem;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(255,215,0,0.06), rgba(156,39,176,0.04), rgba(13,10,26,0.9));
+    border: 1px solid rgba(255,215,0,0.15);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.2s ease forwards;
+    position: relative;
+  }
+  .message-box::before {
+    content: '🇮🇹';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    background: var(--bg-dark);
+    padding: 0 0.8rem;
+  }
+
+  .message-title {
+    font-family: 'Lilita One', cursive;
+    font-size: 1.3rem;
+    color: var(--brainrot-gold);
+    margin-bottom: 0.6rem;
+  }
+  .message-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.65);
+  }
+  .message-text strong {
+    color: var(--chaos-pink);
+  }
+
+  /* === DANCING CHARACTERS ROW === */
+  .dance-floor {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.4s ease forwards;
+  }
+  .dancer {
+    font-size: 2.5rem;
+    animation: danceMove 1.5s ease-in-out infinite;
+  }
+  .dancer:nth-child(1) { animation-delay: 0s; }
+  .dancer:nth-child(2) { animation-delay: 0.15s; }
+  .dancer:nth-child(3) { animation-delay: 0.3s; }
+  .dancer:nth-child(4) { animation-delay: 0.45s; }
+  .dancer:nth-child(5) { animation-delay: 0.6s; }
+  @keyframes danceMove {
+    0%, 100% { transform: translateY(0) scaleX(1); }
+    25% { transform: translateY(-15px) scaleX(-1); }
+    50% { transform: translateY(0) scaleX(1); }
+    75% { transform: translateY(-10px) scaleX(-1); }
+  }
+
+  /* === BACK LINK === */
+  .back-link {
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.6s ease forwards;
+  }
+  .back-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 0.6rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.3s ease;
+  }
+  .back-link a:hover {
+    color: var(--brainrot-gold);
+    border-color: var(--brainrot-gold);
+    background: rgba(255, 215, 0, 0.05);
+  }
+
+  /* === SHARED ANIMATIONS === */
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .brainrot-stage { gap: 0.8rem; }
+    .creature-card { min-width: 110px; padding: 1rem; }
+    .creature-emoji { font-size: 2rem; }
+    .message-box { margin-left: 0.5rem; margin-right: 0.5rem; padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="flag-stripe"></div>
+
+<!-- Background -->
+<div class="bg-shapes">
+  <div class="shape"></div>
+  <div class="shape"></div>
+  <div class="shape"></div>
+  <div class="shape"></div>
+</div>
+<div class="pasta-rain" id="pastaRain"></div>
+
+<!-- Content -->
+<div class="content">
+
+  <div class="bobby-badge">🇮🇹 Bobby's Brainrot Zone 🧠</div>
+
+  <div class="title-area">
+    <div class="title-bobby">BOBBY'S<br>WORLD</div>
+  </div>
+
+  <p class="subtitle">
+    <span class="highlight">Ideas & creations</span> are cooking... 🍝
+  </p>
+
+  <!-- Brainrot Characters -->
+  <div class="brainrot-stage">
+    <div class="creature-card">
+      <span class="creature-emoji">🐊</span>
+      <span class="creature-name">Bombardiro Crocodilo</span>
+    </div>
+    <div class="creature-card">
+      <span class="creature-emoji">🐘</span>
+      <span class="creature-name">Lirili Larila</span>
+    </div>
+    <div class="creature-card">
+      <span class="creature-emoji">🦈</span>
+      <span class="creature-name">Brrr Patapim</span>
+    </div>
+    <div class="creature-card">
+      <span class="creature-emoji">🐄</span>
+      <span class="creature-name">La Vacca Saturnita</span>
+    </div>
+    <div class="creature-card">
+      <span class="creature-emoji">🐸</span>
+      <span class="creature-name">Tralalero Tralala</span>
+    </div>
+    <div class="creature-card">
+      <span class="creature-emoji">🔔</span>
+      <span class="creature-name">Tung Tung Sahur</span>
+    </div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span class="ticker-word">BRAINROT</span>
+      <span class="ticker-word">BOMBARDIRO</span>
+      <span class="ticker-word">CROCODILO</span>
+      <span class="ticker-word">TRALALERO</span>
+      <span class="ticker-word">TRALALA</span>
+      <span class="ticker-word">PATAPIM</span>
+      <span class="ticker-word">SAHUR</span>
+      <span class="ticker-word">LIRILI</span>
+      <span class="ticker-word">LARILA</span>
+      <span class="ticker-word">SATURNITA</span>
+      <span class="ticker-word">BRAINROT</span>
+      <span class="ticker-word">BOMBARDIRO</span>
+      <span class="ticker-word">CROCODILO</span>
+      <span class="ticker-word">TRALALERO</span>
+      <span class="ticker-word">TRALALA</span>
+      <span class="ticker-word">PATAPIM</span>
+      <span class="ticker-word">SAHUR</span>
+      <span class="ticker-word">LIRILI</span>
+      <span class="ticker-word">LARILA</span>
+      <span class="ticker-word">SATURNITA</span>
+    </div>
+  </div>
+
+  <!-- Message -->
+  <div class="message-box">
+    <div class="message-title">Bobby's Big Ideas Are Coming Soon 🚀</div>
+    <div class="message-text">
+      Bobby is cooking up something <strong>legendary</strong>. Creations, ideas, and maximum brainrot energy are on the way. This page will be filled with all the wild stuff Bobby's brain comes up with. Stay tuned — it's going to be <strong>absolutely unhinged</strong>. 🐊🔥
+    </div>
+  </div>
+
+  <!-- Dancing Characters -->
+  <div class="dance-floor">
+    <span class="dancer">🐊</span>
+    <span class="dancer">🐘</span>
+    <span class="dancer">🦈</span>
+    <span class="dancer">🐄</span>
+    <span class="dancer">🐸</span>
+  </div>
+
+  <div class="back-link">
+    <a href="/">← Back to Home Base</a>
+  </div>
+
+</div>
+
+<script>
+  // === Pasta / Brainrot Rain ===
+  const pastaEmojis = ['🍝','🍕','🇮🇹','🐊','🐘','🦈','🧠','🔥','🐸','🔔','⭐','🍷'];
+  const rainContainer = document.getElementById('pastaRain');
+
+  function spawnPasta() {
+    const el = document.createElement('div');
+    el.className = 'pasta';
+    el.textContent = pastaEmojis[Math.floor(Math.random() * pastaEmojis.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.fontSize = (1 + Math.random() * 1.8) + 'rem';
+    el.style.animationDuration = (6 + Math.random() * 10) + 's';
+    rainContainer.appendChild(el);
+    setTimeout(() => el.remove(), 18000);
+  }
+
+  // Initial burst
+  for (let i = 0; i < 15; i++) {
+    setTimeout(spawnPasta, i * 300);
+  }
+  setInterval(spawnPasta, 1400);
+
+  // === Card wiggle on hover ===
+  document.querySelectorAll('.creature-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = `translateY(-6px) scale(1.05) perspective(500px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+</script>
+</body>
+</html>
