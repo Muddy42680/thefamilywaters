@@ -53,7 +53,7 @@ function initSplash() {
 }
 
 // ---- Setup screen ----
-function renderSetup() {
+function renderRoster() {
   const list = $("roster-list");
   list.innerHTML = "";
   state.players.forEach((p) => {
@@ -62,10 +62,13 @@ function renderSetup() {
     li.innerHTML = `<span class="name">${p.name}</span><span class="badge">${p.present ? "Present" : "Absent"}</span>`;
     li.addEventListener("click", () => {
       p.present = !p.present;
-      renderSetup();
+      renderRoster();
     });
     list.appendChild(li);
   });
+}
+function renderSetup() {
+  renderRoster();
   $("num-subs").value = state.numSubs;
   $("plays-per-sub").value = state.playsPerSub;
 }
