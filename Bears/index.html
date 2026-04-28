@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Bears</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0B162A" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="apple-touch-icon" href="logo.svg" />
+</head>
+<body>
+
+  <section id="splash" class="screen active">
+    <img src="logo.svg" alt="Bears" class="splash-logo" />
+    <h1 class="splash-title">BEARS</h1>
+  </section>
+
+  <section id="setup" class="screen">
+    <header class="topbar"><h2>Setup</h2></header>
+    <div class="content">
+      <div class="card">
+        <h3>Game settings</h3>
+        <p class="hint">Set these before starting the game.</p>
+        <label class="field">
+          <span>Subs per change</span>
+          <input id="num-subs" type="number" min="1" max="5" value="2" inputmode="numeric" />
+        </label>
+        <label class="field">
+          <span>Plays per sub</span>
+          <input id="plays-per-sub" type="number" min="1" max="20" value="2" inputmode="numeric" />
+        </label>
+      </div>
+
+      <div class="card">
+        <h3>Roster</h3>
+        <p class="hint">Tap a name to toggle present / absent.</p>
+        <ul id="roster-list" class="player-list"></ul>
+      </div>
+    </div>
+    <footer class="bottombar">
+      <button id="start-game" class="primary">Start Game</button>
+    </footer>
+  </section>
+
+  <section id="initial-off" class="screen">
+    <header class="topbar"><h2>Start off the field</h2></header>
+    <div class="content">
+      <p class="hint">Pick <span id="initial-off-count">2</span> players to start on the bench. Everyone else starts on the field.</p>
+      <ul id="initial-off-list" class="player-list selectable"></ul>
+    </div>
+    <footer class="bottombar">
+      <button id="back-to-setup" class="secondary">Back</button>
+      <button id="confirm-initial-off" class="primary" disabled>Start Game</button>
+    </footer>
+  </section>
+
+  <section id="game" class="screen">
+    <header class="topbar">
+      <h2 class="brand"><img src="logo.svg" alt="" class="brand-logo" /><span>Bears</span></h2>
+      <button id="open-settings" class="ghost">⚙ Settings</button>
+    </header>
+    <div class="content">
+      <div class="card field-card">
+        <div class="row-head">
+          <h3>On the field</h3>
+          <span class="count" id="on-count">0</span>
+        </div>
+        <p class="hint">Select <span id="sub-count">2</span> to sub out.</p>
+        <ul id="on-field-list" class="player-list selectable"></ul>
+      </div>
+
+      <div class="card">
+        <div class="row-head">
+          <h3>Off the field</h3>
+          <span class="count" id="off-count">0</span>
+        </div>
+        <ul id="off-field-list" class="player-list"></ul>
+      </div>
+    </div>
+    <footer class="bottombar">
+      <button id="end-game" class="secondary">End</button>
+      <button id="submit-sub" class="primary" disabled>Submit Sub</button>
+    </footer>
+  </section>
+
+  <div id="instructions" class="modal">
+    <div class="modal-inner">
+      <h2>How to use Bears</h2>
+      <ol class="steps">
+        <li><strong>Set game settings.</strong> Choose how many players to sub at a time (Subs per change) and how many plays between subs (Plays per sub).</li>
+        <li><strong>Mark roster.</strong> Tap each name to toggle Present or Absent. Absent players are not included in substitutions.</li>
+        <li><strong>Pick starting bench.</strong> Tap Start Game, then select the players who begin off the field. Everyone else starts on the field.</li>
+        <li><strong>Make substitutions.</strong> On the game screen, tap players on the field to sub out, then tap Submit Sub. Bench players rotate in; selected players come off.</li>
+        <li><strong>Track stats.</strong> Each player shows how many times they've been off and plays since their last sub. The on-field list is sorted with the longest-playing at the top.</li>
+        <li><strong>Mid-game changes.</strong> Tap ⚙ Settings to adjust subs/plays or to mark a late-arriving player present.</li>
+      </ol>
+      <button id="close-instructions" class="primary">OK</button>
+    </div>
+  </div>
+
+  <div id="settings-sheet" class="sheet">
+    <div class="sheet-inner">
+      <h3>Game settings</h3>
+      <label class="field">
+        <span>Subs per change</span>
+        <input id="settings-num-subs" type="number" min="1" max="5" inputmode="numeric" />
+      </label>
+      <label class="field">
+        <span>Plays per sub</span>
+        <input id="settings-plays-per-sub" type="number" min="1" max="20" inputmode="numeric" />
+      </label>
+
+      <h3 style="margin-top:10px">Late arrivals</h3>
+      <ul id="late-list" class="player-list"></ul>
+
+      <button id="close-settings" class="primary">Done</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

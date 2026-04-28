@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Bears">
+  <circle cx="100" cy="100" r="96" fill="#0B162A"/>
+  <path d="M140 60 C110 60, 80 78, 80 108 C80 134, 104 148, 132 146 L146 126 L124 126 C108 126, 100 118, 100 106 C100 92, 114 84, 132 86 L148 72 Z"
+        fill="#C83803" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="turf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f8f3a"/>
+      <stop offset="1" stop-color="#1f6b28"/>
+    </linearGradient>
+    <pattern id="stripes" x="0" y="0" width="60" height="300" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="30" height="300" fill="#2a8235" opacity="0.25"/>
+    </pattern>
+  </defs>
+  <rect width="600" height="300" fill="url(#turf)"/>
+  <rect width="600" height="300" fill="url(#stripes)"/>
+  <rect x="0" y="0" width="60" height="300" fill="#184d1e" opacity="0.6"/>
+  <rect x="540" y="0" width="60" height="300" fill="#184d1e" opacity="0.6"/>
+  <g stroke="#ffffff" stroke-width="3" opacity="0.85">
+    <line x1="60"  y1="0" x2="60"  y2="300"/>
+    <line x1="540" y1="0" x2="540" y2="300"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="2" opacity="0.75">
+    <line x1="120" y1="0" x2="120" y2="300"/>
+    <line x1="180" y1="0" x2="180" y2="300"/>
+    <line x1="240" y1="0" x2="240" y2="300"/>
+    <line x1="300" y1="0" x2="300" y2="300"/>
+    <line x1="360" y1="0" x2="360" y2="300"/>
+    <line x1="420" y1="0" x2="420" y2="300"/>
+    <line x1="480" y1="0" x2="480" y2="300"/>
+  </g>
+  <g fill="#ffffff" font-family="Arial, sans-serif" font-weight="bold" font-size="22" opacity="0.85" text-anchor="middle">
+    <text x="120" y="165">10</text>
+    <text x="180" y="165">20</text>
+    <text x="240" y="165">30</text>
+    <text x="300" y="165">50</text>
+    <text x="360" y="165">30</text>
+    <text x="420" y="165">20</text>
+    <text x="480" y="165">10</text>
+  </g>
+</svg>
