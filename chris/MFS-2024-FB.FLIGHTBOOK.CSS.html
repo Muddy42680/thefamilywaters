@@ -1,0 +1,320 @@
+
+<style>
+:root { --accent: #1a6fc4; --accent-light: #e6f1fb; --accent-border: #b5d4f4; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.book { padding: 1rem 0 2rem; }
+.cover { background: linear-gradient(135deg, #0a2540 0%, #1a4a7a 60%, #1a6fc4 100%); border-radius: var(--border-radius-lg); padding: 2rem 2rem 1.5rem; margin-bottom: 1.5rem; color: white; position: relative; overflow: hidden; }
+.cover::before { content: '✈'; position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 80px; opacity: 0.12; }
+.cover-eyebrow { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.5rem; }
+.cover-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+.cover-sub { font-size: 14px; opacity: 0.7; }
+.toc { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-bottom: 1.5rem; }
+.toc-item { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 12px; cursor: pointer; transition: background 0.15s; }
+.toc-item:hover { background: var(--accent-light); border-color: var(--accent-border); }
+.toc-icon { font-size: 18px; margin-bottom: 4px; display: block; color: var(--accent); }
+.toc-label { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+.section { margin-bottom: 1.25rem; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+.section-header { background: var(--color-background-secondary); padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.section-header:hover { background: var(--accent-light); }
+.section-icon { font-size: 18px; color: var(--accent); flex-shrink: 0; }
+.section-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+.section-chevron { font-size: 14px; color: var(--color-text-secondary); transition: transform 0.2s; }
+.section-chevron.open { transform: rotate(180deg); }
+.section-body { display: none; padding: 0; }
+.section-body.open { display: block; }
+.subsection { border-top: 0.5px solid var(--color-border-tertiary); }
+.subsection-title { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-secondary); padding: 10px 16px 6px; }
+.keybind-table { width: 100%; border-collapse: collapse; }
+.keybind-table tr { border-bottom: 0.5px solid var(--color-border-tertiary); }
+.keybind-table tr:last-child { border-bottom: none; }
+.keybind-table td { padding: 8px 16px; font-size: 13px; vertical-align: middle; }
+.keybind-table td:first-child { width: 52%; color: var(--color-text-primary); }
+.keybind-table td:last-child { text-align: right; }
+.key { display: inline-block; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); border-bottom-width: 2px; border-radius: 4px; padding: 2px 7px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--color-text-primary); white-space: nowrap; }
+.note { font-size: 11px; color: var(--color-text-secondary); padding: 8px 16px 10px; font-style: italic; border-top: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); }
+</style>
+
+<div class="book">
+  <div class="cover">
+    <div class="cover-eyebrow">Keyboard Reference Guide</div>
+    <div class="cover-title">Microsoft Flight Simulator 2024</div>
+    <div class="cover-sub">Complete controls & bindings — simulator edition</div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-item" onclick="toggleSection('engine')"><i class="ti ti-engine toc-icon" aria-hidden="true"></i><div class="toc-label">Engine & Throttle</div></div>
+    <div class="toc-item" onclick="toggleSection('flight')"><i class="ti ti-plane toc-icon" aria-hidden="true"></i><div class="toc-label">Flight Surfaces</div></div>
+    <div class="toc-item" onclick="toggleSection('landing')"><i class="ti ti-arrow-down toc-icon" aria-hidden="true"></i><div class="toc-label">Landing & Brakes</div></div>
+    <div class="toc-item" onclick="toggleSection('trim')"><i class="ti ti-adjustments-horizontal toc-icon" aria-hidden="true"></i><div class="toc-label">Trim Controls</div></div>
+    <div class="toc-item" onclick="toggleSection('autopilot')"><i class="ti ti-robot toc-icon" aria-hidden="true"></i><div class="toc-label">Autopilot</div></div>
+    <div class="toc-item" onclick="toggleSection('lights')"><i class="ti ti-bulb toc-icon" aria-hidden="true"></i><div class="toc-label">Lights</div></div>
+    <div class="toc-item" onclick="toggleSection('camera')"><i class="ti ti-camera toc-icon" aria-hidden="true"></i><div class="toc-label">Camera & Views</div></div>
+    <div class="toc-item" onclick="toggleSection('emergency')"><i class="ti ti-alert-triangle toc-icon" aria-hidden="true"></i><div class="toc-label">Emergency & Misc</div></div>
+    <div class="toc-item" onclick="toggleSection('vr')"><i class="ti ti-3d-cube-sphere toc-icon" aria-hidden="true"></i><div class="toc-label">VR Controls</div></div>
+  </div>
+
+  <!-- Engine & Throttle -->
+  <div class="section" id="s-engine">
+    <div class="section-header" onclick="toggleSection('engine')">
+      <i class="ti ti-engine section-icon" aria-hidden="true"></i>
+      <span class="section-title">Engine & Throttle</span>
+      <i class="ti ti-chevron-down section-chevron" id="chev-engine"></i>
+    </div>
+    <div class="section-body" id="b-engine">
+      <div class="subsection">
+        <div class="subsection-title">Throttle & power</div>
+        <table class="keybind-table">
+          <tr><td>Throttle idle</td><td><span class="key">F1</span></td></tr>
+          <tr><td>Increase throttle</td><td><span class="key">F3</span> hold</td></tr>
+          <tr><td>Max throttle</td><td><span class="key">F4</span></td></tr>
+          <tr><td>Throttle fine decrease</td><td><span class="key">Ctrl</span> + <span class="key">F2</span></td></tr>
+          <tr><td>Throttle fine increase</td><td><span class="key">Ctrl</span> + <span class="key">F3</span></td></tr>
+        </table>
+      </div>
+      <div class="subsection">
+        <div class="subsection-title">Reverse thrust</div>
+        <table class="keybind-table">
+          <tr><td>Engage reverse thrust</td><td><span class="key">F2</span> hold</td></tr>
+          <tr><td>Increase reverse thrust</td><td><span class="key">F2</span> hold</td></tr>
+          <tr><td>Reduce reverse thrust</td><td><span class="key">Shift</span> + <span class="key">F2</span></td></tr>
+          <tr><td>Increase forward thrust</td><td><span class="key">Shift</span> + <span class="key">F3</span></td></tr>
+        </table>
+      </div>
+      <div class="subsection">
+        <div class="subsection-title">Engine start / stop</div>
+        <table class="keybind-table">
+          <tr><td>Auto-start engines</td><td><span class="key">Ctrl</span> + <span class="key">E</span></td></tr>
+          <tr><td>Start selected engine</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">E</span></td></tr>
+          <tr><td>Shut down all engines</td><td><span class="key">Shift</span> + <span class="key">Ctrl</span> + <span class="key">F1</span></td></tr>
+        </table>
+      </div>
+      <div class="subsection">
+        <div class="subsection-title">Engine selection (multi-engine)</div>
+        <table class="keybind-table">
+          <tr><td>Select engine 1</td><td><span class="key">E</span> + <span class="key">1</span></td></tr>
+          <tr><td>Select engine 2</td><td><span class="key">E</span> + <span class="key">2</span></td></tr>
+          <tr><td>Select engine 3 / 4</td><td><span class="key">E</span> + <span class="key">3</span> / <span class="key">4</span></td></tr>
+          <tr><td>Select all engines</td><td><span class="key">E</span> + <span class="key">All</span></td></tr>
+        </table>
+      </div>
+      <div class="subsection">
+        <div class="subsection-title">Mixture (piston aircraft)</div>
+        <table class="keybind-table">
+          <tr><td>Mixture cutoff</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F1</span></td></tr>
+          <tr><td>Lean mixture</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F2</span></td></tr>
+          <tr><td>Enrich mixture</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F3</span></td></tr>
+          <tr><td>Full rich</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F4</span></td></tr>
+        </table>
+      </div>
+      <div class="subsection">
+        <div class="subsection-title">Propeller (turboprop & piston)</div>
+        <table class="keybind-table">
+          <tr><td>Feather prop</td><td><span class="key">Ctrl</span> + <span class="key">F1</span></td></tr>
+          <tr><td>Decrease prop RPM</td><td><span class="key">Ctrl</span> + <span class="key">F2</span></td></tr>
+          <tr><td>Increase prop RPM</td><td><span class="key">Ctrl</span> + <span class="key">F3</span></td></tr>
+          <tr><td>Max prop RPM</td><td><span class="key">Ctrl</span> + <span class="key">F4</span></td></tr>
+        </table>
+      </div>
+      <div class="subsection">
+        <div class="subsection-title">Fuel system</div>
+        <table class="keybind-table">
+          <tr><td>Fuel selector</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F</span></td></tr>
+          <tr><td>Toggle fuel pumps</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">B</span></td></tr>
+          <tr><td>Crossfeed (airliners)</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">V</span></td></tr>
+          <tr><td>Toggle engine anti-ice</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">X</span></td></tr>
+        </table>
+      </div>
+      <div class="note">APU master, start, and bleed controls are cockpit-only — no default keyboard binding.</div>
+    </div>
+  </div>
+
+  <!-- Flight Surfaces -->
+  <div class="section" id="s-flight">
+    <div class="section-header" onclick="toggleSection('flight')">
+      <i class="ti ti-plane section-icon" aria-hidden="true"></i>
+      <span class="section-title">Flight Surfaces — Flaps & Spoilers</span>
+      <i class="ti ti-chevron-down section-chevron" id="chev-flight"></i>
+    </div>
+    <div class="section-body" id="b-flight">
+      <div class="subsection">
+        <div class="subsection-title">Flaps</div>
+        <table class="keybind-table">
+          <tr><td>Flaps up (one step)</td><td><span class="key">F6</span></td></tr>
+          <tr><td>Flaps full up</td><td><span class="key">F5</span></td></tr>
+          <tr><td>Flaps down (one step)</td><td><span class="key">F7</span></td></tr>
+          <tr><td>Flaps full down</td><td><span class="key">F8</span></td></tr>
+        </table>
+      </div>
+      <div class="subsection">
+        <div class="subsection-title">Spoilers / airbrakes</div>
+        <table class="keybind-table">
+          <tr><td>Toggle arm / disarm</td><td><span class="key">/</span></td></tr>
+          <tr><td>Extend fully</td><td><span class="key">Shift</span> + <span class="key">/</span></td></tr>
+          <tr><td>Retract fully</td><td><span class="key">Ctrl</span> + <span class="key">/</span></td></tr>
+        </table>
+      </div>
+      <div class="note">In air: spoilers act as speed brakes. On ground: auto-deploy if armed on landing.</div>
+    </div>
+  </div>
+
+  <!-- Landing & Brakes -->
+  <div class="section" id="s-landing">
+    <div class="section-header" onclick="toggleSection('landing')">
+      <i class="ti ti-arrow-down section-icon" aria-hidden="true"></i>
+      <span class="section-title">Landing Gear & Brakes</span>
+      <i class="ti ti-chevron-down section-chevron" id="chev-landing"></i>
+    </div>
+    <div class="section-body" id="b-landing">
+      <div class="subsection">
+        <div class="subsection-title">Gear</div>
+        <table class="keybind-table">
+          <tr><td>Gear up / down</td><td><span class="key">G</span></td></tr>
+          <tr><td>Alternate gear extension</td><td><span class="key">Shift</span> + <span class="key">G</span></td></tr>
+        </table>
+      </div>
+      <div class="subsection">
+        <div class="subsection-title">Brakes</div>
+        <table class="keybind-table">
+          <tr><td>Brakes (hold)</td><td><span class="key">Num Del</span> (.)</td></tr>
+          <tr><td>Parking brake toggle</td><td><span class="key">Ctrl</span> + <span class="key">Num Del</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trim -->
+  <div class="section" id="s-trim">
+    <div class="section-header" onclick="toggleSection('trim')">
+      <i class="ti ti-adjustments-horizontal section-icon" aria-hidden="true"></i>
+      <span class="section-title">Trim Controls</span>
+      <i class="ti ti-chevron-down section-chevron" id="chev-trim"></i>
+    </div>
+    <div class="section-body" id="b-trim">
+      <table class="keybind-table">
+        <tr><td>Nose up trim</td><td><span class="key">Num 7</span></td></tr>
+        <tr><td>Nose down trim</td><td><span class="key">Num 1</span></td></tr>
+        <tr><td>Rudder trim left</td><td><span class="key">Num 4</span></td></tr>
+        <tr><td>Rudder trim right</td><td><span class="key">Num 6</span></td></tr>
+        <tr><td>Aileron trim left</td><td><span class="key">Num 0</span></td></tr>
+        <tr><td>Aileron trim right</td><td><span class="key">Num Enter</span></td></tr>
+      </table>
+      <div class="note">Trim is critical for stable approaches and hands-off cruise flight.</div>
+    </div>
+  </div>
+
+  <!-- Autopilot -->
+  <div class="section" id="s-autopilot">
+    <div class="section-header" onclick="toggleSection('autopilot')">
+      <i class="ti ti-robot section-icon" aria-hidden="true"></i>
+      <span class="section-title">Autopilot</span>
+      <i class="ti ti-chevron-down section-chevron" id="chev-autopilot"></i>
+    </div>
+    <div class="section-body" id="b-autopilot">
+      <table class="keybind-table">
+        <tr><td>Autopilot master on / off</td><td><span class="key">Z</span></td></tr>
+        <tr><td>Altitude hold</td><td><span class="key">Ctrl</span> + <span class="key">A</span></td></tr>
+        <tr><td>Heading hold</td><td><span class="key">Ctrl</span> + <span class="key">H</span></td></tr>
+        <tr><td>Nav mode</td><td><span class="key">Ctrl</span> + <span class="key">N</span></td></tr>
+        <tr><td>Approach mode (APR)</td><td><span class="key">Ctrl</span> + <span class="key">R</span></td></tr>
+        <tr><td>Vertical speed mode</td><td><span class="key">Ctrl</span> + <span class="key">V</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Lights -->
+  <div class="section" id="s-lights">
+    <div class="section-header" onclick="toggleSection('lights')">
+      <i class="ti ti-bulb section-icon" aria-hidden="true"></i>
+      <span class="section-title">Lights</span>
+      <i class="ti ti-chevron-down section-chevron" id="chev-lights"></i>
+    </div>
+    <div class="section-body" id="b-lights">
+      <table class="keybind-table">
+        <tr><td>All lights toggle</td><td><span class="key">L</span></td></tr>
+        <tr><td>Landing lights</td><td><span class="key">Shift</span> + <span class="key">L</span></td></tr>
+        <tr><td>Strobe lights</td><td><span class="key">Ctrl</span> + <span class="key">L</span></td></tr>
+        <tr><td>Beacon lights</td><td><span class="key">Alt</span> + <span class="key">L</span></td></tr>
+        <tr><td>Navigation lights</td><td><span class="key">Shift</span> + <span class="key">Ctrl</span> + <span class="key">L</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Camera & Views -->
+  <div class="section" id="s-camera">
+    <div class="section-header" onclick="toggleSection('camera')">
+      <i class="ti ti-camera section-icon" aria-hidden="true"></i>
+      <span class="section-title">Camera & Views</span>
+      <i class="ti ti-chevron-down section-chevron" id="chev-camera"></i>
+    </div>
+    <div class="section-body" id="b-camera">
+      <table class="keybind-table">
+        <tr><td>External view</td><td><span class="key">End</span></td></tr>
+        <tr><td>Drone camera</td><td><span class="key">Insert</span></td></tr>
+        <tr><td>Toggle cockpit / external</td><td><span class="key">Ctrl</span> + <span class="key">Tab</span></td></tr>
+        <tr><td>Reset view</td><td><span class="key">Space</span></td></tr>
+        <tr><td>Freelook</td><td>Right mouse hold</td></tr>
+        <tr><td>Cockpit interaction focus</td><td>Middle mouse</td></tr>
+        <tr><td>Cycle VFR map</td><td><span class="key">V</span></td></tr>
+        <tr><td>Toggle GPS / MFD map</td><td><span class="key">M</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Emergency & Misc -->
+  <div class="section" id="s-emergency">
+    <div class="section-header" onclick="toggleSection('emergency')">
+      <i class="ti ti-alert-triangle section-icon" aria-hidden="true"></i>
+      <span class="section-title">Emergency & Miscellaneous</span>
+      <i class="ti ti-chevron-down section-chevron" id="chev-emergency"></i>
+    </div>
+    <div class="section-body" id="b-emergency">
+      <table class="keybind-table">
+        <tr><td>Set altimeter to local QNH</td><td><span class="key">B</span></td></tr>
+        <tr><td>Oxygen supply</td><td><span class="key">O</span></td></tr>
+        <tr><td>Toggle anti-ice</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">X</span></td></tr>
+        <tr><td>Kill all engines</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F1</span></td></tr>
+      </table>
+      <div class="note">Fire handles and fuel cutoff are cockpit-only. Feather prop in emergency: Ctrl + F1.</div>
+    </div>
+  </div>
+
+  <!-- VR Controls -->
+  <div class="section" id="s-vr">
+    <div class="section-header" onclick="toggleSection('vr')">
+      <i class="ti ti-3d-cube-sphere section-icon" aria-hidden="true"></i>
+      <span class="section-title">VR Controls</span>
+      <i class="ti ti-chevron-down section-chevron" id="chev-vr"></i>
+    </div>
+    <div class="section-body" id="b-vr">
+      <div class="subsection">
+        <div class="subsection-title">Headset</div>
+        <table class="keybind-table">
+          <tr><td>Enter / exit VR</td><td><span class="key">Ctrl</span> + <span class="key">Tab</span></td></tr>
+          <tr><td>Reset VR view</td><td><span class="key">Space</span></td></tr>
+        </table>
+      </div>
+      <div class="subsection">
+        <div class="subsection-title">Controllers</div>
+        <table class="keybind-table">
+          <tr><td>Interact with buttons</td><td>Trigger</td></tr>
+          <tr><td>Turn knobs (mixture, prop)</td><td>Grab + Twist</td></tr>
+          <tr><td>Throttle</td><td>Grab + Pull</td></tr>
+          <tr><td>Reverse thrust</td><td>Grab + Pull past idle</td></tr>
+          <tr><td>Grab yoke / throttle</td><td>Grip button</td></tr>
+          <tr><td>Move head position</td><td>Thumbstick</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSection(id) {
+  const body = document.getElementById('b-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+</script>
