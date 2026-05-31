@@ -11,71 +11,39 @@
     --sky-mid: #0f1b4d;
     --sky-glow: #1a3a8a;
     --cloud-white: #e8f0ff;
-    --jet-silver: #c0cfdf;
     --thrust-orange: #ff6a00;
     --thrust-yellow: #ffc107;
     --contrail-blue: #64b5f6;
     --neon-cyan: #00f0ff;
-    --runway-green: #00e676;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 40%, var(--sky-glow) 100%);
-    min-height: 100vh;
-    overflow-x: hidden;
-    font-family: 'Fredoka', sans-serif;
-    color: #fff;
-    position: relative;
+    min-height: 100vh; overflow-x: hidden;
+    font-family: 'Fredoka', sans-serif; color: #fff; position: relative;
   }
-
-  /* === STARS === */
-  .stars {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-  }
+  .stars { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
   .star {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background: #fff;
-    border-radius: 50%;
-    animation: twinkle 3s ease-in-out infinite alternate;
+    position: absolute; width: 2px; height: 2px; background: #fff;
+    border-radius: 50%; animation: twinkle 3s ease-in-out infinite alternate;
   }
   @keyframes twinkle {
     0% { opacity: 0.2; transform: scale(1); }
     100% { opacity: 1; transform: scale(1.5); }
   }
-
-  /* === CLOUDS === */
-  .clouds {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    overflow: hidden;
-  }
+  .clouds { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
   .cloud {
     position: absolute;
     background: radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: cloudDrift linear infinite;
+    border-radius: 50%; animation: cloudDrift linear infinite;
   }
   @keyframes cloudDrift {
     0% { transform: translateX(110vw); }
     100% { transform: translateX(-30vw); }
   }
-
-  /* === AIRPLANE === */
   .airplane-container {
-    position: fixed;
-    z-index: 2;
-    pointer-events: none;
-    animation: flyAcross 14s linear infinite;
-    top: 18%;
+    position: fixed; z-index: 2; pointer-events: none;
+    animation: flyAcross 14s linear infinite; top: 18%;
   }
   @keyframes flyAcross {
     0% { left: -15%; transform: rotate(-2deg); }
@@ -84,196 +52,114 @@
     75% { transform: rotate(2deg); }
     100% { left: 115%; transform: rotate(-2deg); }
   }
-
   .airplane {
     font-size: 4rem;
-    filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.4));
+    filter: drop-shadow(0 0 20px rgba(0,240,255,0.4));
     animation: planeWobble 2s ease-in-out infinite;
   }
   @keyframes planeWobble {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }
   }
-
   .contrail {
-    position: absolute;
-    right: 55px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 250px;
-    height: 4px;
+    position: absolute; right: 55px; top: 50%; transform: translateY(-50%);
+    width: 250px; height: 4px;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5));
-    border-radius: 2px;
-    animation: contrailPulse 1.5s ease-in-out infinite;
+    border-radius: 2px; animation: contrailPulse 1.5s ease-in-out infinite;
   }
   @keyframes contrailPulse {
     0%, 100% { opacity: 0.3; width: 200px; }
     50% { opacity: 0.7; width: 280px; }
   }
-
-  /* === SECOND PLANE (smaller, background) === */
   .airplane-bg {
-    position: fixed;
-    z-index: 1;
-    pointer-events: none;
-    animation: flyAcrossBg 22s linear infinite;
-    top: 45%;
-    font-size: 1.8rem;
-    opacity: 0.3;
-    filter: blur(1px);
+    position: fixed; z-index: 1; pointer-events: none;
+    animation: flyAcrossBg 22s linear infinite; top: 45%;
+    font-size: 1.8rem; opacity: 0.3; filter: blur(1px);
   }
   @keyframes flyAcrossBg {
-    0% { left: 115%; }
-    100% { left: -10%; }
+    0% { left: 115%; } 100% { left: -10%; }
   }
-
-  /* === RADAR PING === */
   .radar {
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 240, 255, 0.2);
-    z-index: 5;
-    opacity: 0.5;
+    position: fixed; bottom: 40px; right: 40px;
+    width: 100px; height: 100px; border-radius: 50%;
+    border: 1px solid rgba(0,240,255,0.2); z-index: 5; opacity: 0.5;
   }
   .radar::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 240, 255, 0.1);
+    content: ''; position: absolute; inset: 0;
+    border-radius: 50%; border: 1px solid rgba(0,240,255,0.1);
     animation: radarPing 3s ease-out infinite;
   }
   .radar::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 50%;
-    height: 2px;
+    content: ''; position: absolute; top: 50%; left: 50%;
+    width: 50%; height: 2px;
     background: linear-gradient(90deg, var(--neon-cyan), transparent);
-    transform-origin: left center;
-    animation: radarSweep 3s linear infinite;
+    transform-origin: left center; animation: radarSweep 3s linear infinite;
   }
   @keyframes radarPing {
     0% { transform: scale(1); opacity: 0.5; }
     100% { transform: scale(2); opacity: 0; }
   }
   @keyframes radarSweep {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }
   }
-
   .radar-dot {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: var(--neon-cyan);
-    border-radius: 50%;
-    top: 30%;
-    left: 60%;
-    animation: radarBlink 3s ease-in-out infinite;
+    position: absolute; width: 4px; height: 4px;
+    background: var(--neon-cyan); border-radius: 50%;
+    top: 30%; left: 60%; animation: radarBlink 3s ease-in-out infinite;
     box-shadow: 0 0 6px var(--neon-cyan);
   }
   @keyframes radarBlink {
-    0%, 40%, 100% { opacity: 0; }
-    50%, 60% { opacity: 1; }
+    0%, 40%, 100% { opacity: 0; } 50%, 60% { opacity: 1; }
   }
-
-  /* === CONTENT === */
   .content {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-    text-align: center;
+    position: relative; z-index: 10;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 100vh; padding: 2rem; text-align: center;
   }
-
-  /* === PILOT BADGE === */
   .pilot-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.5rem 1.5rem;
-    border-radius: 50px;
-    border: 1px solid rgba(0, 240, 255, 0.3);
-    background: rgba(0, 240, 255, 0.06);
-    backdrop-filter: blur(8px);
-    margin-bottom: 2rem;
-    opacity: 0;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.5rem 1.5rem; border-radius: 50px;
+    border: 1px solid rgba(0,240,255,0.3); background: rgba(0,240,255,0.06);
+    backdrop-filter: blur(8px); margin-bottom: 2rem; opacity: 0;
     animation: fadeSlideDown 0.8s 0.2s ease forwards;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--neon-cyan);
+    font-family: 'Orbitron', sans-serif; font-size: 0.8rem;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--neon-cyan);
   }
   .pilot-badge .wing { font-size: 1.2rem; }
-
-  /* === TITLE === */
   .title {
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 900;
-    font-size: clamp(2.5rem, 8vw, 5.5rem);
-    line-height: 1.15;
-    margin-bottom: 0.5rem;
-    opacity: 0;
+    font-family: 'Orbitron', sans-serif; font-weight: 900;
+    font-size: clamp(2.5rem, 8vw, 5.5rem); line-height: 1.15;
+    margin-bottom: 0.5rem; opacity: 0;
     animation: fadeSlideDown 1s 0.4s ease forwards;
-    text-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+    text-shadow: 0 0 40px rgba(0,240,255,0.3);
   }
   .title .line1 {
     display: block;
     background: linear-gradient(90deg, var(--cloud-white), var(--contrail-blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
   .title .line2 {
     display: block;
     background: linear-gradient(90deg, var(--thrust-orange), var(--thrust-yellow), var(--neon-cyan));
     background-size: 200% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     animation: titleShimmer 4s ease infinite;
   }
   @keyframes titleShimmer {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+    0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; }
   }
-
   .tagline {
-    font-family: 'Righteous', cursive;
-    font-size: clamp(1.1rem, 3vw, 1.6rem);
-    color: rgba(255,255,255,0.6);
-    margin-bottom: 2.5rem;
-    opacity: 0;
+    font-family: 'Righteous', cursive; font-size: clamp(1.1rem, 3vw, 1.6rem);
+    color: rgba(255,255,255,0.6); margin-bottom: 2.5rem; opacity: 0;
     animation: fadeSlideDown 1s 0.6s ease forwards;
   }
-
-  /* === RUNWAY DIVIDER === */
   .runway {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 2.5rem;
-    opacity: 0;
-    animation: fadeSlideUp 0.8s 0.8s ease forwards;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 2.5rem; opacity: 0; animation: fadeSlideUp 0.8s 0.8s ease forwards;
   }
   .runway-dash {
-    width: 30px;
-    height: 4px;
-    background: var(--thrust-yellow);
-    border-radius: 2px;
-    opacity: 0.6;
-    animation: runwayLight 2s ease-in-out infinite;
+    width: 30px; height: 4px; background: var(--thrust-yellow);
+    border-radius: 2px; opacity: 0.6; animation: runwayLight 2s ease-in-out infinite;
   }
   .runway-dash:nth-child(2) { animation-delay: 0.2s; }
   .runway-dash:nth-child(3) { animation-delay: 0.4s; }
@@ -285,119 +171,83 @@
     0%, 100% { opacity: 0.3; transform: scaleX(1); }
     50% { opacity: 1; transform: scaleX(1.3); }
   }
-
-  /* === INFO CARDS === */
   .flight-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    justify-content: center;
-    margin-bottom: 2.5rem;
-    opacity: 0;
-    animation: fadeSlideUp 0.8s 1.0s ease forwards;
+    display: flex; flex-wrap: wrap; gap: 1.2rem;
+    justify-content: center; margin-bottom: 2.5rem;
+    opacity: 0; animation: fadeSlideUp 0.8s 1.0s ease forwards;
   }
   .info-card {
-    padding: 1.2rem 1.8rem;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    backdrop-filter: blur(8px);
-    min-width: 160px;
-    transition: all 0.3s ease;
+    padding: 1.2rem 1.8rem; border-radius: 16px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px); min-width: 160px; transition: all 0.3s ease;
   }
   .info-card:hover {
-    border-color: var(--neon-cyan);
-    background: rgba(0, 240, 255, 0.05);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 30px rgba(0, 240, 255, 0.1);
+    border-color: var(--neon-cyan); background: rgba(0,240,255,0.05);
+    transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,240,255,0.1);
   }
   .info-label {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    margin-bottom: 0.4rem;
+    font-family: 'Orbitron', sans-serif; font-size: 0.6rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); margin-bottom: 0.4rem;
   }
-  .info-value {
-    font-family: 'Righteous', cursive;
-    font-size: 1.2rem;
-    color: var(--neon-cyan);
-  }
-
-  /* === BOARDING PASS === */
+  .info-value { font-family: 'Righteous', cursive; font-size: 1.2rem; color: var(--neon-cyan); }
   .boarding-pass {
-    background: rgba(255,255,255,0.03);
-    border: 1px dashed rgba(255,255,255,0.15);
-    border-radius: 16px;
-    padding: 1.5rem 2.5rem;
-    margin-bottom: 2.5rem;
-    max-width: 420px;
-    position: relative;
-    opacity: 0;
+    background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 16px; padding: 1.5rem 2.5rem; margin-bottom: 2.5rem;
+    max-width: 420px; position: relative; opacity: 0;
     animation: fadeSlideUp 0.8s 1.2s ease forwards;
   }
-  .boarding-pass::before,
-  .boarding-pass::after {
-    content: '';
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    background: var(--sky-mid);
-    border-radius: 50%;
-    top: 50%;
-    transform: translateY(-50%);
+  .boarding-pass::before, .boarding-pass::after {
+    content: ''; position: absolute; width: 24px; height: 24px;
+    background: var(--sky-mid); border-radius: 50%; top: 50%; transform: translateY(-50%);
   }
   .boarding-pass::before { left: -13px; }
   .boarding-pass::after { right: -13px; }
-
   .boarding-label {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.55rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
-    margin-bottom: 0.3rem;
+    font-family: 'Orbitron', sans-serif; font-size: 0.55rem;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(255,255,255,0.3); margin-bottom: 0.3rem;
   }
   .boarding-name {
-    font-family: 'Righteous', cursive;
-    font-size: 1.8rem;
+    font-family: 'Righteous', cursive; font-size: 1.8rem;
     background: linear-gradient(90deg, var(--neon-cyan), var(--contrail-blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     margin-bottom: 0.2rem;
   }
-  .boarding-dest {
-    font-size: 0.9rem;
-    color: rgba(255,255,255,0.5);
+  .boarding-dest { font-size: 0.9rem; color: rgba(255,255,255,0.5); }
+  .explore-wrap {
+    opacity: 0; animation: fadeSlideUp 0.8s 1.35s ease forwards; margin-bottom: 1.5rem;
   }
-
-  /* === BACK LINK === */
-  .back-link {
-    opacity: 0;
-    animation: fadeSlideUp 0.8s 1.4s ease forwards;
+  .btn-explore {
+    display: inline-flex; align-items: center; gap: 0.7rem;
+    padding: 1rem 2.5rem; border-radius: 50px;
+    background: linear-gradient(135deg, var(--thrust-orange), var(--thrust-yellow));
+    border: none; color: #0a0e27; cursor: pointer;
+    font-family: 'Orbitron', sans-serif; font-size: 1rem;
+    font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    transition: all 0.3s ease; position: relative; overflow: hidden;
+    box-shadow: 0 0 30px rgba(255,193,7,0.3);
   }
+  .btn-explore::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--contrail-blue));
+    opacity: 0; transition: opacity 0.3s ease;
+  }
+  .btn-explore:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 0 50px rgba(0,240,255,0.4); }
+  .btn-explore:hover::before { opacity: 1; }
+  .btn-explore span { position: relative; z-index: 1; }
+  .btn-explore .plane-icon { font-size: 1.3rem; position: relative; z-index: 1; animation: iconBounce 1.5s ease-in-out infinite; }
+  @keyframes iconBounce {
+    0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); }
+  }
+  .back-link { opacity: 0; animation: fadeSlideUp 0.8s 1.5s ease forwards; }
   .back-link a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: rgba(255,255,255,0.4);
-    text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-    padding: 0.6rem 1.5rem;
-    border-radius: 50px;
-    border: 1px solid rgba(255,255,255,0.08);
-    transition: all 0.3s ease;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.85rem;
+    letter-spacing: 1px; padding: 0.6rem 1.5rem; border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.08); transition: all 0.3s ease;
   }
-  .back-link a:hover {
-    color: var(--neon-cyan);
-    border-color: var(--neon-cyan);
-    background: rgba(0, 240, 255, 0.05);
-  }
-
-  /* === ANIMATIONS === */
+  .back-link a:hover { color: var(--neon-cyan); border-color: var(--neon-cyan); background: rgba(0,240,255,0.05); }
   @keyframes fadeSlideDown {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -407,104 +257,1126 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* ============================================================
+     LAYER SYSTEM: overlay-1 = explore menu, overlay-2 = full detail pages
+  ============================================================ */
+  .overlay {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2rem; opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease; overflow-y: auto;
+  }
+  .overlay.open { opacity: 1; pointer-events: all; }
+
+  /* === EXPLORE MENU OVERLAY === */
+  #exploreOverlay { background: rgba(6,9,24,0.97); }
+  .overlay-stars { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  .overlay-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+  .overlay-close {
+    position: fixed; top: 1.5rem; right: 1.5rem;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.5); border-radius: 50%;
+    width: 44px; height: 44px; font-size: 1.2rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s; font-family: sans-serif; z-index: 200;
+  }
+  .overlay-close:hover { background: rgba(255,60,60,0.15); color: #ff6060; border-color: rgba(255,60,60,0.3); }
+
+  .overlay-badge {
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem;
+    letter-spacing: 4px; text-transform: uppercase; color: var(--neon-cyan);
+    margin-bottom: 1rem; border: 1px solid rgba(0,240,255,0.25);
+    padding: 0.4rem 1.2rem; border-radius: 50px; background: rgba(0,240,255,0.05);
+  }
+  .overlay-title {
+    font-family: 'Orbitron', sans-serif; font-weight: 900;
+    font-size: clamp(1.6rem, 5vw, 3rem); text-align: center;
+    margin-bottom: 0.5rem; line-height: 1.2;
+    background: linear-gradient(90deg, #fff, var(--contrail-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .overlay-sub {
+    font-family: 'Righteous', cursive; font-size: 1.1rem;
+    color: rgba(255,255,255,0.45); margin-bottom: 3rem; text-align: center;
+  }
+
+  /* === CHOICE CARDS === */
+  .choices {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem; width: 100%; max-width: 820px;
+  }
+  .choice-card {
+    position: relative; border-radius: 20px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03); backdrop-filter: blur(12px);
+    padding: 2rem; cursor: pointer; transition: all 0.35s ease;
+    text-align: left; display: flex; flex-direction: column; gap: 0.7rem;
+  }
+  .choice-card:hover { transform: translateY(-6px); }
+  .choice-card.card-flight { border-color: rgba(0,240,255,0.2); }
+  .choice-card.card-flight:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 60px rgba(0,240,255,0.12), inset 0 0 40px rgba(0,240,255,0.04);
+  }
+  .choice-card.card-dest { border-color: rgba(255,193,7,0.2); }
+  .choice-card.card-dest:hover {
+    border-color: var(--thrust-yellow);
+    box-shadow: 0 0 60px rgba(255,193,7,0.12), inset 0 0 40px rgba(255,193,7,0.04);
+  }
+  .choice-glow {
+    position: absolute; top: -40px; right: -40px;
+    width: 160px; height: 160px; border-radius: 50%;
+    pointer-events: none; opacity: 0.15; transition: opacity 0.35s;
+  }
+  .choice-card:hover .choice-glow { opacity: 0.3; }
+  .card-flight .choice-glow { background: radial-gradient(circle, var(--neon-cyan), transparent 70%); }
+  .card-dest .choice-glow { background: radial-gradient(circle, var(--thrust-yellow), transparent 70%); }
+  .choice-icon { font-size: 2.5rem; line-height: 1; }
+  .choice-tag {
+    font-family: 'Orbitron', sans-serif; font-size: 0.55rem;
+    letter-spacing: 3px; text-transform: uppercase; padding: 0.25rem 0.8rem;
+    border-radius: 30px; display: inline-block; width: fit-content;
+  }
+  .card-flight .choice-tag { background: rgba(0,240,255,0.1); color: var(--neon-cyan); border: 1px solid rgba(0,240,255,0.25); }
+  .card-dest .choice-tag { background: rgba(255,193,7,0.1); color: var(--thrust-yellow); border: 1px solid rgba(255,193,7,0.25); }
+  .choice-title {
+    font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; line-height: 1.3;
+  }
+  .card-flight .choice-title { color: #e8f4ff; }
+  .card-dest .choice-title { color: #fff8e1; }
+  .choice-desc { font-family: 'Fredoka', sans-serif; font-size: 1rem; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+  /* DESTINATION CARD — full route preview inside card */
+  .route-preview {
+    background: rgba(255,255,255,0.04); border-radius: 12px;
+    padding: 1rem; margin-top: 0.5rem;
+    border: 1px solid rgba(255,193,7,0.1);
+  }
+  .route-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: 'Orbitron', sans-serif; font-size: 0.7rem;
+    color: rgba(255,255,255,0.3); letter-spacing: 2px; margin-bottom: 0.8rem;
+    text-transform: uppercase;
+  }
+  .route-airports {
+    display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;
+  }
+  .apt {
+    text-align: center;
+  }
+  .apt-code {
+    font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.4rem; color: var(--thrust-yellow);
+  }
+  .apt-name { font-size: 0.7rem; color: rgba(255,255,255,0.35); margin-top: 2px; }
+  .route-line-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .route-line-bar {
+    width: 100%; height: 1px; background: rgba(255,193,7,0.3); position: relative;
+  }
+  .route-plane-icon {
+    font-size: 1rem; animation: routePlaneFly 4s ease-in-out infinite;
+  }
+  @keyframes routePlaneFly {
+    0%, 100% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+  }
+  .route-details {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+  }
+  .route-detail-item {
+    background: rgba(255,255,255,0.04); border-radius: 8px;
+    padding: 0.5rem 0.7rem;
+  }
+  .rdi-label {
+    font-family: 'Orbitron', sans-serif; font-size: 0.5rem;
+    letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 2px;
+  }
+  .rdi-val { font-family: 'Righteous', cursive; font-size: 0.9rem; color: var(--thrust-yellow); }
+
+  .choice-cta-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    margin-top: 0.5rem; padding: 0.8rem 1.5rem; border-radius: 50px;
+    border: none; cursor: pointer; font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    transition: all 0.25s ease; width: 100%;
+  }
+  .card-flight .choice-cta-btn {
+    background: rgba(0,240,255,0.12); color: var(--neon-cyan);
+    border: 1px solid rgba(0,240,255,0.3);
+  }
+  .card-flight .choice-cta-btn:hover { background: rgba(0,240,255,0.2); transform: translateY(-2px); }
+  .card-dest .choice-cta-btn {
+    background: linear-gradient(135deg, var(--thrust-orange), var(--thrust-yellow));
+    color: #0a0e27; border: none;
+  }
+  .card-dest .choice-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,193,7,0.3); }
+
+  /* ============================================================
+     FULLSCREEN DETAIL PAGES (flight book + destination)
+  ============================================================ */
+  .detail-page {
+    position: fixed; inset: 0; z-index: 200;
+    overflow-y: auto; opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .detail-page.open { opacity: 1; pointer-events: all; }
+
+  /* --- FLIGHT BOOK PAGE --- */
+  #flightBookPage {
+    background: #0a0e1a;
+    font-family: 'Fredoka', sans-serif; color: #e2e8f0;
+  }
+  .fb-topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(10,14,26,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,240,255,0.15);
+    padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 1rem;
+  }
+  .fb-back {
+    background: rgba(0,240,255,0.08); border: 1px solid rgba(0,240,255,0.2);
+    color: var(--neon-cyan); border-radius: 50px; padding: 0.4rem 1rem;
+    cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 0.65rem;
+    letter-spacing: 2px; text-transform: uppercase; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .fb-back:hover { background: rgba(0,240,255,0.15); }
+  .fb-bar-title {
+    font-family: 'Orbitron', sans-serif; font-size: 0.8rem; font-weight: 700;
+    color: var(--neon-cyan); letter-spacing: 3px; text-transform: uppercase;
+  }
+  .fb-content { padding: 2rem 1.5rem; max-width: 900px; margin: 0 auto; }
+  .fb-hero {
+    background: linear-gradient(135deg, #0a1628 0%, #0f2040 60%, #0a1628 100%);
+    border: 1px solid rgba(0,240,255,0.2); border-radius: 20px;
+    padding: 2rem; margin-bottom: 2rem; text-align: center;
+  }
+  .fb-hero-eyebrow {
+    font-family: 'Orbitron', sans-serif; font-size: 0.6rem; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--neon-cyan); margin-bottom: 0.6rem;
+  }
+  .fb-hero-title {
+    font-family: 'Orbitron', sans-serif; font-weight: 900;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    background: linear-gradient(90deg, #fff, var(--contrail-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+  .fb-hero-sub { font-family: 'Righteous', cursive; color: rgba(255,255,255,0.4); font-size: 1rem; }
+
+  /* sections */
+  .fb-section { margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; overflow: hidden; }
+  .fb-sec-header {
+    background: rgba(255,255,255,0.04); padding: 1rem 1.5rem;
+    display: flex; align-items: center; gap: 0.8rem;
+    cursor: pointer; transition: background 0.2s; user-select: none;
+  }
+  .fb-sec-header:hover { background: rgba(0,240,255,0.07); }
+  .fb-sec-icon { font-size: 1.3rem; }
+  .fb-sec-title { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; font-weight: 700; color: #e2e8f0; flex: 1; letter-spacing: 1px; }
+  .fb-sec-chev { color: rgba(255,255,255,0.3); font-size: 1rem; transition: transform 0.2s; }
+  .fb-sec-chev.open { transform: rotate(180deg); }
+  .fb-sec-body { display: none; }
+  .fb-sec-body.open { display: block; }
+  .fb-subsection { border-top: 1px solid rgba(255,255,255,0.05); }
+  .fb-sub-title {
+    font-family: 'Orbitron', sans-serif; font-size: 0.55rem; letter-spacing: 3px;
+    text-transform: uppercase; color: rgba(255,255,255,0.3);
+    padding: 0.8rem 1.5rem 0.4rem;
+  }
+  .fb-table { width: 100%; border-collapse: collapse; }
+  .fb-table tr { border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .fb-table tr:last-child { border-bottom: none; }
+  .fb-table td { padding: 8px 1.5rem; font-size: 0.95rem; vertical-align: middle; }
+  .fb-table td:last-child { text-align: right; }
+  .key {
+    display: inline-block; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15); border-bottom-width: 2px;
+    border-radius: 5px; padding: 2px 8px;
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem; font-weight: 700;
+    color: var(--neon-cyan); white-space: nowrap; letter-spacing: 1px;
+  }
+  .fb-note {
+    font-size: 0.8rem; color: rgba(255,255,255,0.3); font-style: italic;
+    padding: 0.6rem 1.5rem 0.8rem; border-top: 1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.02);
+  }
+
+  /* --- DESTINATION PAGE --- */
+  #destPage { background: #07100a; font-family: 'Fredoka', sans-serif; color: #e2e8f0; }
+  .dest-topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(7,16,10,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,193,7,0.2);
+    padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 1rem;
+  }
+  .dest-back {
+    background: rgba(255,193,7,0.08); border: 1px solid rgba(255,193,7,0.25);
+    color: var(--thrust-yellow); border-radius: 50px; padding: 0.4rem 1rem;
+    cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 0.65rem;
+    letter-spacing: 2px; text-transform: uppercase; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .dest-back:hover { background: rgba(255,193,7,0.15); }
+  .dest-bar-title {
+    font-family: 'Orbitron', sans-serif; font-size: 0.8rem; font-weight: 700;
+    color: var(--thrust-yellow); letter-spacing: 3px; text-transform: uppercase;
+  }
+  .dest-content { padding: 2rem 1.5rem; max-width: 900px; margin: 0 auto; }
+  .dest-hero {
+    background: linear-gradient(135deg, #071510 0%, #0f2a15 60%, #071510 100%);
+    border: 1px solid rgba(255,193,7,0.2); border-radius: 20px;
+    padding: 2rem; margin-bottom: 2rem; text-align: center;
+  }
+  .dest-hero-eyebrow {
+    font-family: 'Orbitron', sans-serif; font-size: 0.6rem; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--thrust-yellow); margin-bottom: 0.8rem;
+  }
+  .dest-airports {
+    display: flex; align-items: center; justify-content: center; gap: 1.5rem; margin-bottom: 1rem;
+  }
+  .dest-apt-code {
+    font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 2.5rem; color: #fff;
+  }
+  .dest-apt-city { font-family: 'Righteous', cursive; font-size: 0.9rem; color: rgba(255,255,255,0.4); }
+  .dest-arrow {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-size: 1.5rem; color: var(--thrust-yellow);
+    animation: routePlaneFly 3s ease-in-out infinite;
+  }
+  .dest-arrow-line { width: 60px; height: 1px; background: rgba(255,193,7,0.4); }
+  .dest-stats {
+    display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; margin-top: 1.2rem;
+  }
+  .dest-stat {
+    background: rgba(255,255,255,0.05); border-radius: 10px;
+    padding: 0.6rem 1.2rem; text-align: center;
+    border: 1px solid rgba(255,193,7,0.1);
+  }
+  .dest-stat-label {
+    font-family: 'Orbitron', sans-serif; font-size: 0.5rem;
+    letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 3px;
+  }
+  .dest-stat-val { font-family: 'Righteous', cursive; font-size: 1.1rem; color: var(--thrust-yellow); }
+
+  /* dest info cards */
+  .dest-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,193,7,0.1);
+    border-radius: 14px; padding: 1.5rem; margin-bottom: 1.2rem;
+  }
+  .dest-card-title {
+    font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--thrust-yellow);
+    margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem;
+  }
+  .dest-card-body { font-size: 1rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+  .dest-row {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 1rem;
+  }
+  .dest-row:last-child { border-bottom: none; }
+  .dest-row-label { color: rgba(255,255,255,0.4); font-size: 0.9rem; flex: 1; }
+  .dest-row-val { color: #fff; font-size: 0.9rem; text-align: right; font-family: 'Righteous', cursive; }
+  .dest-waypoints { display: flex; flex-direction: column; gap: 0.5rem; }
+  .waypoint {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.5rem 0.8rem; border-radius: 8px;
+    background: rgba(255,255,255,0.03); font-size: 0.9rem;
+  }
+  .wp-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--thrust-yellow); flex-shrink: 0;
+  }
+  .wp-name { color: #fff; font-family: 'Righteous', cursive; flex: 1; }
+  .wp-alt { color: rgba(255,255,255,0.35); font-size: 0.8rem; }
+  .dest-tip {
+    background: rgba(0,230,118,0.07); border: 1px solid rgba(0,230,118,0.15);
+    border-radius: 10px; padding: 0.8rem 1rem; font-size: 0.9rem;
+    color: rgba(0,230,118,0.8); display: flex; gap: 0.6rem; align-items: flex-start;
+    margin-top: 0.6rem; line-height: 1.5;
+  }
+
+  /* === FULL FLIGHT CSS PAGE CARD === */
+  .choice-card.card-css { border-color: rgba(180,100,255,0.2); }
+  .choice-card.card-css:hover {
+    border-color: #c084fc;
+    box-shadow: 0 0 60px rgba(180,100,255,0.14), inset 0 0 40px rgba(180,100,255,0.05);
+  }
+  .card-css .choice-glow { background: radial-gradient(circle, #c084fc, transparent 70%); }
+  .card-css .choice-tag { background: rgba(180,100,255,0.1); color: #c084fc; border: 1px solid rgba(180,100,255,0.28); }
+  .card-css .choice-title { color: #f3e8ff; }
+  .card-css .choice-cta-btn {
+    background: linear-gradient(135deg, #7c3aed, #c084fc);
+    color: #fff; border: none;
+  }
+  .card-css .choice-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(180,100,255,0.35); }
+
+  /* === LINK CHOICE MODAL === */
+  .link-modal-backdrop {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(4,6,18,0.92); backdrop-filter: blur(16px);
+    display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  }
+  .link-modal-backdrop.open { opacity: 1; pointer-events: all; }
+  .link-modal {
+    background: linear-gradient(160deg, #0d1230 0%, #1a0a35 100%);
+    border: 1px solid rgba(180,100,255,0.3);
+    border-radius: 24px; padding: 2.5rem 2rem;
+    max-width: 520px; width: 100%; position: relative;
+    box-shadow: 0 0 80px rgba(180,100,255,0.12), 0 30px 80px rgba(0,0,0,0.6);
+    transform: translateY(20px); transition: transform 0.35s ease;
+  }
+  .link-modal-backdrop.open .link-modal { transform: translateY(0); }
+  .link-modal-close {
+    position: absolute; top: 1.2rem; right: 1.2rem;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.45); border-radius: 50%;
+    width: 36px; height: 36px; font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .link-modal-close:hover { background: rgba(255,60,60,0.15); color: #ff6060; border-color: rgba(255,60,60,0.3); }
+  .link-modal-eyebrow {
+    font-family: 'Orbitron', sans-serif; font-size: 0.58rem; letter-spacing: 4px;
+    text-transform: uppercase; color: #c084fc; text-align: center;
+    margin-bottom: 0.6rem; padding: 0.3rem 1rem;
+    border: 1px solid rgba(180,100,255,0.25); border-radius: 50px;
+    display: inline-block; background: rgba(180,100,255,0.07);
+  }
+  .link-modal-header {
+    text-align: center; margin-bottom: 2rem;
+  }
+  .link-modal-q {
+    font-family: 'Orbitron', sans-serif; font-weight: 900;
+    font-size: clamp(1.2rem, 3.5vw, 1.7rem); line-height: 1.3;
+    background: linear-gradient(90deg, #e8d5ff, #c084fc);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin: 0.5rem 0 0;
+  }
+  .link-modal-options {
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .link-opt-btn {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.1rem 1.4rem; border-radius: 16px;
+    border: 1px solid; cursor: pointer; text-align: left;
+    transition: all 0.25s ease; width: 100%; background: transparent;
+    font-family: 'Fredoka', sans-serif;
+  }
+  .link-opt-btn.opt-full {
+    border-color: rgba(0,240,255,0.25); background: rgba(0,240,255,0.05);
+  }
+  .link-opt-btn.opt-full:hover {
+    border-color: var(--neon-cyan); background: rgba(0,240,255,0.1);
+    transform: translateX(6px); box-shadow: -4px 0 20px rgba(0,240,255,0.15);
+  }
+  .link-opt-btn.opt-css {
+    border-color: rgba(180,100,255,0.25); background: rgba(180,100,255,0.05);
+  }
+  .link-opt-btn.opt-css:hover {
+    border-color: #c084fc; background: rgba(180,100,255,0.1);
+    transform: translateX(6px); box-shadow: -4px 0 20px rgba(180,100,255,0.15);
+  }
+  .link-opt-btn.opt-exit {
+    border-color: rgba(255,100,100,0.2); background: rgba(255,100,100,0.04);
+  }
+  .link-opt-btn.opt-exit:hover {
+    border-color: #ff6a6a; background: rgba(255,100,100,0.09);
+    transform: translateX(6px); box-shadow: -4px 0 20px rgba(255,100,100,0.12);
+  }
+  .opt-icon { font-size: 1.8rem; flex-shrink: 0; }
+  .opt-text-wrap { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; }
+  .opt-label {
+    font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .opt-full .opt-label { color: var(--neon-cyan); }
+  .opt-css .opt-label { color: #c084fc; }
+  .opt-exit .opt-label { color: #ff8080; }
+  .opt-desc { font-size: 0.85rem; color: rgba(255,255,255,0.42); line-height: 1.4; }
+  .opt-arrow {
+    font-size: 1.1rem; opacity: 0.4; transition: all 0.2s;
+    font-family: monospace;
+  }
+  .link-opt-btn:hover .opt-arrow { opacity: 1; transform: translateX(4px); }
+
   @media (max-width: 600px) {
     .flight-info { flex-direction: column; align-items: center; }
     .radar { display: none; }
     .boarding-pass { margin-left: 1rem; margin-right: 1rem; }
+    .choices { grid-template-columns: 1fr; }
+    .dest-airports { gap: 0.8rem; }
+    .dest-apt-code { font-size: 1.8rem; }
+    .link-modal { padding: 2rem 1.3rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- Stars -->
 <div class="stars" id="stars"></div>
-
-<!-- Clouds -->
 <div class="clouds">
   <div class="cloud" style="width:300px;height:80px;top:25%;animation-duration:25s;"></div>
   <div class="cloud" style="width:400px;height:100px;top:55%;animation-duration:35s;animation-delay:-10s;"></div>
   <div class="cloud" style="width:250px;height:70px;top:75%;animation-duration:28s;animation-delay:-18s;"></div>
   <div class="cloud" style="width:350px;height:90px;top:10%;animation-duration:32s;animation-delay:-5s;"></div>
 </div>
-
-<!-- Airplanes -->
-<div class="airplane-container">
-  <div class="contrail"></div>
-  <div class="airplane">✈️</div>
-</div>
+<div class="airplane-container"><div class="contrail"></div><div class="airplane">✈️</div></div>
 <div class="airplane-bg">🛩️</div>
+<div class="radar"><div class="radar-dot"></div></div>
 
-<!-- Radar -->
-<div class="radar">
-  <div class="radar-dot"></div>
-</div>
-
-<!-- Content -->
+<!-- MAIN PAGE -->
 <div class="content">
-
-  <div class="pilot-badge">
-    <span class="wing">🛫</span>
-    <span>Captain Chris</span>
-    <span class="wing">🛬</span>
-  </div>
-
-  <div class="title">
-    <span class="line1">This Page Is</span>
-    <span class="line2">About To Take Off</span>
-  </div>
-
+  <div class="pilot-badge"><span class="wing">🛫</span><span>Captain Chris</span><span class="wing">🛬</span></div>
+  <div class="title"><span class="line1">This Page Is</span><span class="line2">About To Take Off</span></div>
   <p class="tagline">Fasten your seatbelt — something epic is on approach 🛫</p>
-
   <div class="runway">
-    <div class="runway-dash"></div>
-    <div class="runway-dash"></div>
-    <div class="runway-dash"></div>
-    <div class="runway-dash"></div>
-    <div class="runway-dash"></div>
-    <div class="runway-dash"></div>
+    <div class="runway-dash"></div><div class="runway-dash"></div><div class="runway-dash"></div>
+    <div class="runway-dash"></div><div class="runway-dash"></div><div class="runway-dash"></div>
     <div class="runway-dash"></div>
   </div>
-
   <div class="flight-info">
-    <div class="info-card">
-      <div class="info-label">Flight Status</div>
-      <div class="info-value">✈️ Boarding</div>
-    </div>
-    <div class="info-card">
-      <div class="info-label">Destination</div>
-      <div class="info-value">🌍 Awesome</div>
-    </div>
-    <div class="info-card">
-      <div class="info-label">ETA</div>
-      <div class="info-value">🕐 Soon™</div>
-    </div>
+    <div class="info-card"><div class="info-label">Flight Status</div><div class="info-value">✈️ Boarding</div></div>
+    <div class="info-card"><div class="info-label">Destination</div><div class="info-value">🌍 Awesome</div></div>
+    <div class="info-card"><div class="info-label">ETA</div><div class="info-value">🕐 Soon™</div></div>
   </div>
-
   <div class="boarding-pass">
     <div class="boarding-label">Boarding Pass — First Class</div>
     <div class="boarding-name">Chris</div>
     <div class="boarding-dest">Cleared for takeoff · Gate C1 · Seat 1A</div>
   </div>
-
-  <div class="back-link">
-    <a href="/">← Back to Home Base</a>
+  <div class="explore-wrap">
+    <button class="btn-explore" onclick="openExplore()">
+      <span class="plane-icon">✈️</span><span>Explore More</span>
+    </button>
   </div>
+  <div class="back-link"><a href="/">← Back to Home Base</a></div>
+</div>
 
+<!-- ============================================================ EXPLORE MENU OVERLAY -->
+<div class="overlay" id="exploreOverlay">
+  <div class="overlay-stars" id="overlayStars"></div>
+  <button class="overlay-close" onclick="closeExplore()">✕</button>
+  <div class="overlay-inner">
+    <div class="overlay-badge">Select Your Destination</div>
+    <div class="overlay-title">What Would You Like<br>to Explore?</div>
+    <div class="overlay-sub">Choose your flight path, Captain</div>
+    <div class="choices">
+
+      <!-- FLIGHT BOOK CARD -->
+      <div class="choice-card card-flight">
+        <div class="choice-glow"></div>
+        <div class="choice-icon">📖</div>
+        <div class="choice-tag">Reference Guide</div>
+        <div class="choice-title">Flight Book — MSFS 2024</div>
+        <div class="choice-desc">Full keyboard controls, engine systems, spoilers, trim, autopilot, VR bindings — every control you need in the cockpit.</div>
+        <button class="choice-cta-btn" onclick="openFlightBook()">See Full Flight Book ✈️</button>
+      </div>
+
+      <!-- DESTINATION CARD -->
+      <div class="choice-card card-dest">
+        <div class="choice-glow"></div>
+        <div class="choice-icon">🗺️</div>
+        <div class="choice-tag">Route Guide</div>
+        <div class="choice-title">Destination: New York → Orlando</div>
+        <div class="choice-desc">Everything about flying this route — airports, waypoints, distance, cruise altitude, and pro tips.</div>
+
+        <!-- MINI ROUTE PREVIEW INSIDE CARD -->
+        <div class="route-preview">
+          <div class="route-header">✈ Live Route Preview</div>
+          <div class="route-airports">
+            <div class="apt"><div class="apt-code">JFK</div><div class="apt-name">New York</div></div>
+            <div class="route-line-wrap">
+              <div class="route-plane-icon">✈️</div>
+              <div class="route-line-bar"></div>
+            </div>
+            <div class="apt"><div class="apt-code">MCO</div><div class="apt-name">Orlando</div></div>
+          </div>
+          <div class="route-details">
+            <div class="route-detail-item"><div class="rdi-label">Distance</div><div class="rdi-val">~950 nm</div></div>
+            <div class="route-detail-item"><div class="rdi-label">Flight Time</div><div class="rdi-val">~2h 30m</div></div>
+            <div class="route-detail-item"><div class="rdi-label">Cruise Alt</div><div class="rdi-val">FL350</div></div>
+            <div class="route-detail-item"><div class="rdi-label">Aircraft</div><div class="rdi-val">A320 / 737</div></div>
+          </div>
+        </div>
+
+        <button class="choice-cta-btn" onclick="openDest()">See Full Route Details 🗺️</button>
+      </div>
+
+      <!-- FULL FLIGHT CSS PAGE CARD -->
+      <div class="choice-card card-css">
+        <div class="choice-glow"></div>
+        <div class="choice-icon">🎨</div>
+        <div class="choice-tag">CSS Reference</div>
+        <div class="choice-title">Full Flight CSS Page</div>
+        <div class="choice-desc">The complete MFS 2024 CSS styling reference — all the design tokens, variables, and visual systems powering this flight book.</div>
+        <button class="choice-cta-btn" onclick="openLinkModal()">Choose Your Runway 🛫</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ LINK CHOICE MODAL -->
+<div class="link-modal-backdrop" id="linkModal">
+  <div class="link-modal">
+    <button class="link-modal-close" onclick="closeLinkModal()">✕</button>
+    <div class="link-modal-header">
+      <div class="link-modal-eyebrow">⚡ Choose Your Flight Path</div>
+      <div class="link-modal-q">Which Link Are You Going?</div>
+    </div>
+    <div class="link-modal-options">
+      <button class="link-opt-btn opt-full" onclick="goFullFB()">
+        <div class="opt-icon">🌐</div>
+        <div class="opt-text-wrap">
+          <div class="opt-label">Full Flight CSS Page</div>
+          <div class="opt-desc">Go to the live full flight book CSS page at thefamilywaters.com</div>
+        </div>
+        <div class="opt-arrow">→</div>
+      </button>
+      <button class="link-opt-btn opt-exit" onclick="exitToChris()">
+        <div class="opt-icon">🏠</div>
+        <div class="opt-text-wrap">
+          <div class="opt-label">Exit — Go to Chris.html</div>
+          <div class="opt-desc">Head back to thefamilywaters.com/chris/chris.html</div>
+        </div>
+        <div class="opt-arrow">→</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ CSS CODE VIEWER PAGE -->
+<div class="detail-page" id="cssCodePage">
+  <div class="fb-topbar" style="border-bottom-color:rgba(180,100,255,0.25);">
+    <button class="fb-back" style="color:#c084fc;border-color:rgba(180,100,255,0.3);background:rgba(180,100,255,0.08);" onclick="closeCSSCode()">← Back</button>
+    <div class="fb-bar-title" style="color:#c084fc;">🎨 MFS 2024 — Full CSS Source</div>
+  </div>
+  <div class="fb-content">
+    <div class="fb-hero" style="border-color:rgba(180,100,255,0.25);background:linear-gradient(135deg,#100a28 0%,#1e0a40 60%,#100a28 100%);">
+      <div class="fb-hero-eyebrow" style="color:#c084fc;">CSS Reference</div>
+      <div class="fb-hero-title" style="background:linear-gradient(90deg,#e8d5ff,#c084fc);-webkit-background-clip:text;background-clip:text;">Full Flight CSS Code</div>
+      <div class="fb-hero-sub">All styling that powers the MFS 2024 Flight Book</div>
+    </div>
+    <div style="background:rgba(10,6,25,0.9);border:1px solid rgba(180,100,255,0.2);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;overflow-x:auto;">
+      <pre id="cssCodeBlock" style="font-family:'Courier New',monospace;font-size:0.78rem;color:#d4b8ff;line-height:1.65;white-space:pre-wrap;word-break:break-word;margin:0;"></pre>
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <button onclick="goFullFB()" style="flex:1;padding:1rem 1.5rem;border-radius:50px;background:linear-gradient(135deg,#7c3aed,#c084fc);border:none;color:#fff;font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.25s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(180,100,255,0.35)'" onmouseout="this.style.transform='';this.style.boxShadow=''">🌐 Visit Full CSS Page</button>
+      <button onclick="exitToChris()" style="flex:1;padding:1rem 1.5rem;border-radius:50px;background:rgba(255,100,100,0.1);border:1px solid rgba(255,100,100,0.25);color:#ff8080;font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.25s;" onmouseover="this.style.background='rgba(255,100,100,0.18)'" onmouseout="this.style.background='rgba(255,100,100,0.1)'">🏠 Exit to Chris.html</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ FLIGHT BOOK FULL PAGE -->
+<div class="detail-page" id="flightBookPage">
+  <div class="fb-topbar">
+    <button class="fb-back" onclick="closeFlightBook()">← Back</button>
+    <div class="fb-bar-title">✈ MSFS 2024 — Flight Book</div>
+  </div>
+  <div class="fb-content">
+    <div class="fb-hero">
+      <div class="fb-hero-eyebrow">Keyboard Reference Guide</div>
+      <div class="fb-hero-title">Microsoft Flight Simulator 2024</div>
+      <div class="fb-hero-sub">Complete controls &amp; bindings — all systems</div>
+    </div>
+
+    <!-- ENGINE & THROTTLE -->
+    <div class="fb-section">
+      <div class="fb-sec-header" onclick="fbToggle('engine')">
+        <span class="fb-sec-icon">🛠️</span>
+        <span class="fb-sec-title">Engine &amp; Throttle</span>
+        <span class="fb-sec-chev" id="fbc-engine">▼</span>
+      </div>
+      <div class="fb-sec-body" id="fbb-engine">
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Throttle &amp; Power</div>
+          <table class="fb-table">
+            <tr><td>Throttle idle</td><td><span class="key">F1</span></td></tr>
+            <tr><td>Increase throttle</td><td><span class="key">F3</span> hold</td></tr>
+            <tr><td>Max throttle</td><td><span class="key">F4</span></td></tr>
+            <tr><td>Fine decrease throttle</td><td><span class="key">Ctrl</span> + <span class="key">F2</span></td></tr>
+            <tr><td>Fine increase throttle</td><td><span class="key">Ctrl</span> + <span class="key">F3</span></td></tr>
+            <tr><td>Decrease forward thrust</td><td><span class="key">Shift</span> + <span class="key">F2</span></td></tr>
+            <tr><td>Increase forward thrust</td><td><span class="key">Shift</span> + <span class="key">F3</span></td></tr>
+          </table>
+        </div>
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Reverse Thrust</div>
+          <table class="fb-table">
+            <tr><td>Engage / increase reverse thrust</td><td><span class="key">F2</span> hold</td></tr>
+            <tr><td>Reduce reverse thrust</td><td><span class="key">Shift</span> + <span class="key">F2</span></td></tr>
+            <tr><td>Cut throttle to idle</td><td><span class="key">F1</span></td></tr>
+          </table>
+          <div class="fb-note">VR: Grab + Pull throttle past idle detent = reverse. Quest 3 controllers supported.</div>
+        </div>
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Engine Start / Stop</div>
+          <table class="fb-table">
+            <tr><td>Auto-start engines</td><td><span class="key">Ctrl</span> + <span class="key">E</span></td></tr>
+            <tr><td>Start selected engine</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">E</span></td></tr>
+            <tr><td>Cut engine(s)</td><td><span class="key">Shift</span> + <span class="key">F1</span></td></tr>
+            <tr><td>Shut down all engines</td><td><span class="key">Shift</span> + <span class="key">Ctrl</span> + <span class="key">F1</span></td></tr>
+          </table>
+        </div>
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Engine Selection (multi-engine)</div>
+          <table class="fb-table">
+            <tr><td>Select engine 1</td><td><span class="key">E</span> + <span class="key">1</span></td></tr>
+            <tr><td>Select engine 2</td><td><span class="key">E</span> + <span class="key">2</span></td></tr>
+            <tr><td>Select engine 3 / 4</td><td><span class="key">E</span> + <span class="key">3</span> / <span class="key">4</span></td></tr>
+          </table>
+          <div class="fb-note">Once selected, throttle / mixture / prop changes apply only to that engine.</div>
+        </div>
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Mixture (piston aircraft)</div>
+          <table class="fb-table">
+            <tr><td>Mixture cutoff</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F1</span></td></tr>
+            <tr><td>Lean mixture</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F2</span></td></tr>
+            <tr><td>Enrich mixture</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F3</span></td></tr>
+            <tr><td>Full rich</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F4</span></td></tr>
+          </table>
+          <div class="fb-note">Mixture affects engine temperature, fuel flow, and power at altitude.</div>
+        </div>
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Propeller (turboprop &amp; piston)</div>
+          <table class="fb-table">
+            <tr><td>Feather prop</td><td><span class="key">Ctrl</span> + <span class="key">F1</span></td></tr>
+            <tr><td>Decrease prop RPM</td><td><span class="key">Ctrl</span> + <span class="key">F2</span></td></tr>
+            <tr><td>Increase prop RPM</td><td><span class="key">Ctrl</span> + <span class="key">F3</span></td></tr>
+            <tr><td>Max prop RPM</td><td><span class="key">Ctrl</span> + <span class="key">F4</span></td></tr>
+          </table>
+        </div>
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Fuel System</div>
+          <table class="fb-table">
+            <tr><td>Fuel selector</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F</span></td></tr>
+            <tr><td>Toggle fuel pumps</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">B</span></td></tr>
+            <tr><td>Crossfeed (airliners)</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">V</span></td></tr>
+            <tr><td>Toggle engine anti-ice</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">X</span></td></tr>
+          </table>
+          <div class="fb-note">APU master, start &amp; bleed — cockpit switches only. No default keyboard binding.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPOILERS -->
+    <div class="fb-section">
+      <div class="fb-sec-header" onclick="fbToggle('spoilers')">
+        <span class="fb-sec-icon">🛫</span>
+        <span class="fb-sec-title">Spoilers / Airbrakes</span>
+        <span class="fb-sec-chev" id="fbc-spoilers">▼</span>
+      </div>
+      <div class="fb-sec-body" id="fbb-spoilers">
+        <table class="fb-table">
+          <tr><td>Toggle arm / disarm</td><td><span class="key">/</span></td></tr>
+          <tr><td>Extend fully</td><td><span class="key">Shift</span> + <span class="key">/</span></td></tr>
+          <tr><td>Retract fully</td><td><span class="key">Ctrl</span> + <span class="key">/</span></td></tr>
+        </table>
+        <div class="fb-note">In air: act as speed brakes. On ground: auto-deploy if armed on landing.</div>
+      </div>
+    </div>
+
+    <!-- FLAPS -->
+    <div class="fb-section">
+      <div class="fb-sec-header" onclick="fbToggle('flaps')">
+        <span class="fb-sec-icon">🛩️</span>
+        <span class="fb-sec-title">Flaps</span>
+        <span class="fb-sec-chev" id="fbc-flaps">▼</span>
+      </div>
+      <div class="fb-sec-body" id="fbb-flaps">
+        <table class="fb-table">
+          <tr><td>Flaps full up</td><td><span class="key">F5</span></td></tr>
+          <tr><td>Flaps up (one step)</td><td><span class="key">F6</span></td></tr>
+          <tr><td>Flaps down (one step)</td><td><span class="key">F7</span></td></tr>
+          <tr><td>Flaps full down</td><td><span class="key">F8</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- LANDING GEAR & BRAKES -->
+    <div class="fb-section">
+      <div class="fb-sec-header" onclick="fbToggle('gear')">
+        <span class="fb-sec-icon">🛬</span>
+        <span class="fb-sec-title">Landing Gear &amp; Brakes</span>
+        <span class="fb-sec-chev" id="fbc-gear">▼</span>
+      </div>
+      <div class="fb-sec-body" id="fbb-gear">
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Gear</div>
+          <table class="fb-table">
+            <tr><td>Gear up / down</td><td><span class="key">G</span></td></tr>
+            <tr><td>Alternate gear extension</td><td><span class="key">Shift</span> + <span class="key">G</span></td></tr>
+          </table>
+        </div>
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Brakes</div>
+          <table class="fb-table">
+            <tr><td>Brakes (hold)</td><td><span class="key">Num Del</span></td></tr>
+            <tr><td>Parking brake toggle</td><td><span class="key">Ctrl</span> + <span class="key">Num Del</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRIM -->
+    <div class="fb-section">
+      <div class="fb-sec-header" onclick="fbToggle('trim')">
+        <span class="fb-sec-icon">🎚️</span>
+        <span class="fb-sec-title">Trim Controls</span>
+        <span class="fb-sec-chev" id="fbc-trim">▼</span>
+      </div>
+      <div class="fb-sec-body" id="fbb-trim">
+        <table class="fb-table">
+          <tr><td>Nose up trim</td><td><span class="key">Num 7</span></td></tr>
+          <tr><td>Nose down trim</td><td><span class="key">Num 1</span></td></tr>
+          <tr><td>Rudder trim left</td><td><span class="key">Num 4</span></td></tr>
+          <tr><td>Rudder trim right</td><td><span class="key">Num 6</span></td></tr>
+          <tr><td>Aileron trim left</td><td><span class="key">Num 0</span></td></tr>
+          <tr><td>Aileron trim right</td><td><span class="key">Num Enter</span></td></tr>
+        </table>
+        <div class="fb-note">Trim is critical for smooth flight and stable approaches.</div>
+      </div>
+    </div>
+
+    <!-- AUTOPILOT -->
+    <div class="fb-section">
+      <div class="fb-sec-header" onclick="fbToggle('ap')">
+        <span class="fb-sec-icon">🤖</span>
+        <span class="fb-sec-title">Autopilot</span>
+        <span class="fb-sec-chev" id="fbc-ap">▼</span>
+      </div>
+      <div class="fb-sec-body" id="fbb-ap">
+        <table class="fb-table">
+          <tr><td>Autopilot master on / off</td><td><span class="key">Z</span></td></tr>
+          <tr><td>Altitude hold</td><td><span class="key">Ctrl</span> + <span class="key">A</span></td></tr>
+          <tr><td>Heading hold</td><td><span class="key">Ctrl</span> + <span class="key">H</span></td></tr>
+          <tr><td>Nav mode</td><td><span class="key">Ctrl</span> + <span class="key">N</span></td></tr>
+          <tr><td>Approach mode (APR)</td><td><span class="key">Ctrl</span> + <span class="key">R</span></td></tr>
+          <tr><td>Vertical speed mode</td><td><span class="key">Ctrl</span> + <span class="key">V</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- LIGHTS -->
+    <div class="fb-section">
+      <div class="fb-sec-header" onclick="fbToggle('lights')">
+        <span class="fb-sec-icon">💡</span>
+        <span class="fb-sec-title">Lights</span>
+        <span class="fb-sec-chev" id="fbc-lights">▼</span>
+      </div>
+      <div class="fb-sec-body" id="fbb-lights">
+        <table class="fb-table">
+          <tr><td>All lights toggle</td><td><span class="key">L</span></td></tr>
+          <tr><td>Landing lights</td><td><span class="key">Shift</span> + <span class="key">L</span></td></tr>
+          <tr><td>Strobe lights</td><td><span class="key">Ctrl</span> + <span class="key">L</span></td></tr>
+          <tr><td>Beacon lights</td><td><span class="key">Alt</span> + <span class="key">L</span></td></tr>
+          <tr><td>Navigation lights</td><td><span class="key">Shift</span> + <span class="key">Ctrl</span> + <span class="key">L</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="fb-section">
+      <div class="fb-sec-header" onclick="fbToggle('camera')">
+        <span class="fb-sec-icon">👀</span>
+        <span class="fb-sec-title">Camera &amp; Views</span>
+        <span class="fb-sec-chev" id="fbc-camera">▼</span>
+      </div>
+      <div class="fb-sec-body" id="fbb-camera">
+        <table class="fb-table">
+          <tr><td>External view</td><td><span class="key">End</span></td></tr>
+          <tr><td>Drone camera</td><td><span class="key">Insert</span></td></tr>
+          <tr><td>Toggle cockpit / external</td><td><span class="key">Ctrl</span> + <span class="key">Tab</span></td></tr>
+          <tr><td>Reset view</td><td><span class="key">Space</span></td></tr>
+          <tr><td>Freelook</td><td>Right mouse hold</td></tr>
+          <tr><td>Cockpit interaction focus</td><td>Middle mouse</td></tr>
+          <tr><td>Cycle VFR map</td><td><span class="key">V</span></td></tr>
+          <tr><td>Toggle GPS / MFD map</td><td><span class="key">M</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- VR -->
+    <div class="fb-section">
+      <div class="fb-sec-header" onclick="fbToggle('vr')">
+        <span class="fb-sec-icon">🕶️</span>
+        <span class="fb-sec-title">VR Controls</span>
+        <span class="fb-sec-chev" id="fbc-vr">▼</span>
+      </div>
+      <div class="fb-sec-body" id="fbb-vr">
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Headset</div>
+          <table class="fb-table">
+            <tr><td>Enter / exit VR</td><td><span class="key">Ctrl</span> + <span class="key">Tab</span></td></tr>
+            <tr><td>Reset VR view</td><td><span class="key">Space</span></td></tr>
+          </table>
+        </div>
+        <div class="fb-subsection">
+          <div class="fb-sub-title">Controllers</div>
+          <table class="fb-table">
+            <tr><td>Interact with buttons</td><td>Trigger</td></tr>
+            <tr><td>Turn knobs (mixture / prop)</td><td>Grab + Twist</td></tr>
+            <tr><td>Throttle</td><td>Grab + Pull</td></tr>
+            <tr><td>Reverse thrust</td><td>Grab + Pull past idle</td></tr>
+            <tr><td>Grab yoke / throttle lever</td><td>Grip button</td></tr>
+            <tr><td>Move head position</td><td>Thumbstick</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMERGENCY -->
+    <div class="fb-section">
+      <div class="fb-sec-header" onclick="fbToggle('emrg')">
+        <span class="fb-sec-icon">🧯</span>
+        <span class="fb-sec-title">Emergency &amp; Miscellaneous</span>
+        <span class="fb-sec-chev" id="fbc-emrg">▼</span>
+      </div>
+      <div class="fb-sec-body" id="fbb-emrg">
+        <table class="fb-table">
+          <tr><td>Set altimeter to local QNH</td><td><span class="key">B</span></td></tr>
+          <tr><td>Oxygen supply</td><td><span class="key">O</span></td></tr>
+          <tr><td>Toggle anti-ice</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">X</span></td></tr>
+          <tr><td>Kill all engines</td><td><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">F1</span></td></tr>
+        </table>
+        <div class="fb-note">Fire handles and fuel cutoff — cockpit only. Feather prop in emergency: Ctrl + F1.</div>
+      </div>
+    </div>
+
+  </div><!-- end fb-content -->
+</div><!-- end flightBookPage -->
+
+<!-- ============================================================ DESTINATION FULL PAGE -->
+<div class="detail-page" id="destPage">
+  <div class="dest-topbar">
+    <button class="dest-back" onclick="closeDest()">← Back</button>
+    <div class="dest-bar-title">🗺️ New York → Orlando — Route Guide</div>
+  </div>
+  <div class="dest-content">
+
+    <div class="dest-hero">
+      <div class="dest-hero-eyebrow">Full Route Guide — Simulator &amp; Real-World</div>
+      <div class="dest-airports">
+        <div>
+          <div class="dest-apt-code">JFK</div>
+          <div class="dest-apt-city">New York</div>
+        </div>
+        <div class="dest-arrow">
+          <div class="dest-arrow-line"></div>
+          ✈️
+          <div class="dest-arrow-line"></div>
+        </div>
+        <div>
+          <div class="dest-apt-code">MCO</div>
+          <div class="dest-apt-city">Orlando</div>
+        </div>
+      </div>
+      <div class="dest-stats">
+        <div class="dest-stat"><div class="dest-stat-label">Distance</div><div class="dest-stat-val">~950 nm</div></div>
+        <div class="dest-stat"><div class="dest-stat-label">Flight Time</div><div class="dest-stat-val">~2h 30m</div></div>
+        <div class="dest-stat"><div class="dest-stat-label">Cruise Alt</div><div class="dest-stat-val">FL350</div></div>
+        <div class="dest-stat"><div class="dest-stat-label">Direction</div><div class="dest-stat-val">South-SW</div></div>
+        <div class="dest-stat"><div class="dest-stat-label">Aircraft</div><div class="dest-stat-val">A320 / 737</div></div>
+      </div>
+    </div>
+
+    <!-- AIRPORT INFO -->
+    <div class="dest-card">
+      <div class="dest-card-title">🛫 Departure — JFK (John F. Kennedy)</div>
+      <div class="dest-card-body">
+        <div class="dest-row"><span class="dest-row-label">Full name</span><span class="dest-row-val">John F. Kennedy International</span></div>
+        <div class="dest-row"><span class="dest-row-label">ICAO / IATA</span><span class="dest-row-val">KJFK / JFK</span></div>
+        <div class="dest-row"><span class="dest-row-label">Elevation</span><span class="dest-row-val">13 ft / 4 m</span></div>
+        <div class="dest-row"><span class="dest-row-label">Main runways</span><span class="dest-row-val">04L/22R · 13L/31R</span></div>
+        <div class="dest-row"><span class="dest-row-label">Departure runway (south flow)</span><span class="dest-row-val">RWY 31L or 22R</span></div>
+        <div class="dest-row"><span class="dest-row-label">ATIS frequency</span><span class="dest-row-val">128.725 MHz</span></div>
+        <div class="dest-row"><span class="dest-row-label">Ground</span><span class="dest-row-val">121.9 MHz</span></div>
+        <div class="dest-row"><span class="dest-row-label">Tower</span><span class="dest-row-val">119.1 MHz</span></div>
+      </div>
+    </div>
+
+    <div class="dest-card">
+      <div class="dest-card-title">🛬 Arrival — MCO (Orlando International)</div>
+      <div class="dest-card-body">
+        <div class="dest-row"><span class="dest-row-label">Full name</span><span class="dest-row-val">Orlando International Airport</span></div>
+        <div class="dest-row"><span class="dest-row-label">ICAO / IATA</span><span class="dest-row-val">KMCO / MCO</span></div>
+        <div class="dest-row"><span class="dest-row-label">Elevation</span><span class="dest-row-val">96 ft / 29 m</span></div>
+        <div class="dest-row"><span class="dest-row-label">Main runways</span><span class="dest-row-val">17L/35R · 18L/36R</span></div>
+        <div class="dest-row"><span class="dest-row-label">Landing runway (north flow)</span><span class="dest-row-val">RWY 17L or 18L</span></div>
+        <div class="dest-row"><span class="dest-row-label">ATIS frequency</span><span class="dest-row-val">124.025 MHz</span></div>
+        <div class="dest-row"><span class="dest-row-label">Approach</span><span class="dest-row-val">125.0 MHz</span></div>
+        <div class="dest-row"><span class="dest-row-label">Tower</span><span class="dest-row-val">124.3 MHz</span></div>
+      </div>
+    </div>
+
+    <!-- WAYPOINTS -->
+    <div class="dest-card">
+      <div class="dest-card-title">🧭 Key Waypoints / Route</div>
+      <div class="dest-waypoints">
+        <div class="waypoint"><div class="wp-dot"></div><span class="wp-name">KJFK — Departure</span><span class="wp-alt">SID: SKORR 5</span></div>
+        <div class="waypoint"><div class="wp-dot"></div><span class="wp-name">HAPIE</span><span class="wp-alt">~FL200 climbing</span></div>
+        <div class="waypoint"><div class="wp-dot"></div><span class="wp-name">SBY (Salisbury VOR)</span><span class="wp-alt">FL350 cruise</span></div>
+        <div class="waypoint"><div class="wp-dot"></div><span class="wp-name">ORF (Norfolk VOR)</span><span class="wp-alt">FL350</span></div>
+        <div class="waypoint"><div class="wp-dot"></div><span class="wp-name">RDU (Raleigh-Durham VOR)</span><span class="wp-alt">FL350</span></div>
+        <div class="waypoint"><div class="wp-dot"></div><span class="wp-name">FAY (Fayetteville VOR)</span><span class="wp-alt">FL350</span></div>
+        <div class="waypoint"><div class="wp-dot"></div><span class="wp-name">CHS (Charleston VOR)</span><span class="wp-alt">Begin descent ~TOD</span></div>
+        <div class="waypoint"><div class="wp-dot"></div><span class="wp-name">JAX (Jacksonville VOR)</span><span class="wp-alt">~FL180 descending</span></div>
+        <div class="waypoint"><div class="wp-dot"></div><span class="wp-name">HERBY (MCO Arrival)</span><span class="wp-alt">STAR: HERBY 2</span></div>
+        <div class="waypoint"><div class="wp-dot"></div><span class="wp-name">KMCO — Landing</span><span class="wp-alt">ILS RWY 17L</span></div>
+      </div>
+    </div>
+
+    <!-- FLIGHT PHASES -->
+    <div class="dest-card">
+      <div class="dest-card-title">📋 Flight Phases</div>
+      <div class="dest-card-body">
+        <div class="dest-row"><span class="dest-row-label">Taxi &amp; departure</span><span class="dest-row-val">~15 min</span></div>
+        <div class="dest-row"><span class="dest-row-label">Climb to FL350</span><span class="dest-row-val">~25 min</span></div>
+        <div class="dest-row"><span class="dest-row-label">Cruise at FL350</span><span class="dest-row-val">~1h 30m</span></div>
+        <div class="dest-row"><span class="dest-row-label">Top of Descent</span><span class="dest-row-val">~130 nm from MCO</span></div>
+        <div class="dest-row"><span class="dest-row-label">Descent &amp; approach</span><span class="dest-row-val">~30 min</span></div>
+        <div class="dest-row"><span class="dest-row-label">Landing &amp; taxi in</span><span class="dest-row-val">~10 min</span></div>
+      </div>
+    </div>
+
+    <!-- PRO TIPS -->
+    <div class="dest-card">
+      <div class="dest-card-title">✅ Captain's Tips</div>
+      <div style="display:flex;flex-direction:column;gap:0.6rem;">
+        <div class="dest-tip">🛫 File your flight plan as JFK → MCO via J121 airway for a realistic ATC route.</div>
+        <div class="dest-tip">⛅ Expect coastal weather near the Carolinas — check winds aloft before departure.</div>
+        <div class="dest-tip">🎯 Start your descent at 130 nm out from MCO. Use 3° descent path: alt = distance × 300.</div>
+        <div class="dest-tip">🛬 ILS RWY 17L at MCO is the primary approach. Set NAV1 to 110.9 MHz.</div>
+        <div class="dest-tip">🤖 Engage autopilot after 1,000 ft AGL departing JFK — set heading 180° then intercept J121.</div>
+        <div class="dest-tip">⚡ Set spoilers ARMED before descent so they auto-deploy on landing rollout.</div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-  // Generate stars
+  // Stars - main
   const starsEl = document.getElementById('stars');
   for (let i = 0; i < 120; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    star.style.left = Math.random() * 100 + '%';
-    star.style.top = Math.random() * 60 + '%';
-    star.style.animationDelay = (Math.random() * 3) + 's';
-    star.style.animationDuration = (2 + Math.random() * 3) + 's';
-    star.style.width = star.style.height = (1 + Math.random() * 2) + 'px';
-    starsEl.appendChild(star);
+    const s = document.createElement('div'); s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 60 + '%';
+    s.style.animationDelay = (Math.random() * 3) + 's';
+    s.style.animationDuration = (2 + Math.random() * 3) + 's';
+    s.style.width = s.style.height = (1 + Math.random() * 2) + 'px';
+    starsEl.appendChild(s);
   }
+  // Stars - overlay
+  const oStars = document.getElementById('overlayStars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div'); s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = (Math.random() * 3) + 's';
+    s.style.animationDuration = (2 + Math.random() * 4) + 's';
+    s.style.width = s.style.height = (1 + Math.random() * 1.5) + 'px';
+    oStars.appendChild(s);
+  }
+
+  function openExplore() {
+    document.getElementById('exploreOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeExplore() {
+    document.getElementById('exploreOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function openFlightBook() {
+    document.getElementById('flightBookPage').classList.add('open');
+  }
+  function closeFlightBook() {
+    document.getElementById('flightBookPage').classList.remove('open');
+  }
+  function openDest() {
+    document.getElementById('destPage').classList.add('open');
+  }
+  function closeDest() {
+    document.getElementById('destPage').classList.remove('open');
+  }
+
+  function openLinkModal() {
+    document.getElementById('linkModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLinkModal() {
+    document.getElementById('linkModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function goFullFB() {
+    window.open('https://thefamilywaters.com/chris/fullFB-css.html', '_blank');
+  }
+  function viewCSSCode() {
+    closeLinkModal();
+    const cssText = document.getElementById('inlineCSSSource').textContent;
+    document.getElementById('cssCodeBlock').textContent = cssText;
+    document.getElementById('cssCodePage').classList.add('open');
+    document.body.style.overflow = '';
+  }
+  function closeCSSCode() {
+    document.getElementById('cssCodePage').classList.remove('open');
+    openExplore();
+  }
+  function exitToChris() {
+    window.location.href = 'https://thefamilywaters.com/chris/chris.html';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeDest(); closeFlightBook(); closeExplore(); closeLinkModal();
+      document.getElementById('cssCodePage').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Flight book collapsible sections
+  function fbToggle(id) {
+    const body = document.getElementById('fbb-' + id);
+    const chev = document.getElementById('fbc-' + id);
+    const open = body.classList.contains('open');
+    body.classList.toggle('open', !open);
+    chev.classList.toggle('open', !open);
+  }
+</script>
+<script id="inlineCSSSource" type="text/plain">
+:root { --accent: #1a6fc4; --accent-light: #e6f1fb; --accent-border: #b5d4f4; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.book { padding: 1rem 0 2rem; }
+.cover { background: linear-gradient(135deg, #0a2540 0%, #1a4a7a 60%, #1a6fc4 100%); border-radius: var(--border-radius-lg); padding: 2rem 2rem 1.5rem; margin-bottom: 1.5rem; color: white; position: relative; overflow: hidden; }
+.cover::before { content: '✈'; position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 80px; opacity: 0.12; }
+.cover-eyebrow { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.5rem; }
+.cover-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+.cover-sub { font-size: 14px; opacity: 0.7; }
+.toc { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-bottom: 1.5rem; }
+.toc-item { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 12px; cursor: pointer; transition: background 0.15s; }
+.toc-item:hover { background: var(--accent-light); border-color: var(--accent-border); }
+.toc-icon { font-size: 18px; margin-bottom: 4px; display: block; color: var(--accent); }
+.toc-label { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+.section { margin-bottom: 1.25rem; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+.section-header { background: var(--color-background-secondary); padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.section-header:hover { background: var(--accent-light); }
+.section-icon { font-size: 18px; color: var(--accent); flex-shrink: 0; }
+.section-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+.section-chevron { font-size: 14px; color: var(--color-text-secondary); transition: transform 0.2s; }
+.section-chevron.open { transform: rotate(180deg); }
+.section-body { display: none; padding: 0; }
+.section-body.open { display: block; }
+.subsection { border-top: 0.5px solid var(--color-border-tertiary); }
+.subsection-title { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-secondary); padding: 10px 16px 6px; }
+.keybind-table { width: 100%; border-collapse: collapse; }
+.keybind-table tr { border-bottom: 0.5px solid var(--color-border-tertiary); }
+.keybind-table tr:last-child { border-bottom: none; }
+.keybind-table td { padding: 8px 16px; font-size: 13px; vertical-align: middle; }
+.keybind-table td:first-child { width: 52%; color: var(--color-text-primary); }
+.keybind-table td:last-child { text-align: right; }
+.key { display: inline-block; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); border-bottom-width: 2px; border-radius: 4px; padding: 2px 7px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--color-text-primary); white-space: nowrap; }
+.note { font-size: 11px; color: var(--color-text-secondary); padding: 8px 16px 10px; font-style: italic; border-top: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); }
 </script>
 </body>
 </html>
