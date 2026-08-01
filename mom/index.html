@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Happy 45th Birthday, Lauren! 🎂</title>
+<style>
+  :root{
+    --pink:#ff6fa5;
+    --gold:#ffc65c;
+    --deep:#2b1b3d;
+    --cream:#fff8f0;
+    --teal:#2ec4b6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    background:var(--cream);
+    color:var(--deep);
+    overflow-x:hidden;
+  }
+  canvas#confetti-canvas{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    pointer-events:none;z-index:9999;
+  }
+  section{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:48px 20px;
+    text-align:center;
+    position:relative;
+  }
+
+  /* ---------- HERO ---------- */
+  #hero{
+    background:linear-gradient(160deg,#ff6fa5 0%,#ff9770 45%,#ffc65c 100%);
+    color:white;
+    overflow:hidden;
+  }
+  #hero .balloon{
+    position:absolute;
+    bottom:-120px;
+    font-size:52px;
+    opacity:0.85;
+    animation:float-up linear infinite;
+  }
+  @keyframes float-up{
+    0%{transform:translateY(0) rotate(0deg);}
+    100%{transform:translateY(-115vh) rotate(15deg);}
+  }
+  .hero-title{
+    font-size:clamp(2.4rem,10vw,4.2rem);
+    font-weight:800;
+    text-shadow:0 4px 18px rgba(0,0,0,0.25);
+    line-height:1.1;
+    animation:pop-in 1s ease-out;
+  }
+  .hero-sub{
+    margin-top:14px;
+    font-size:clamp(1.1rem,4vw,1.5rem);
+    font-weight:600;
+    opacity:0.95;
+    animation:pop-in 1.2s ease-out;
+  }
+  .hero-date{
+    margin-top:26px;
+    background:rgba(255,255,255,0.22);
+    border-radius:999px;
+    padding:10px 26px;
+    font-size:1.05rem;
+    font-weight:700;
+    letter-spacing:0.5px;
+    backdrop-filter:blur(4px);
+  }
+  @keyframes pop-in{
+    0%{opacity:0;transform:translateY(30px) scale(0.9);}
+    100%{opacity:1;transform:translateY(0) scale(1);}
+  }
+  .scroll-cue{
+    position:absolute;
+    bottom:28px;
+    font-size:1.8rem;
+    animation:bounce 2s infinite;
+  }
+  @keyframes bounce{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-12px);}
+  }
+
+  /* ---------- GENERIC SECTION HEADERS ---------- */
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-weight:700;
+    font-size:0.85rem;
+    color:var(--pink);
+    margin-bottom:8px;
+  }
+  h2{
+    font-size:clamp(1.8rem,6vw,2.6rem);
+    font-weight:800;
+    margin-bottom:10px;
+  }
+  .section-text{
+    max-width:560px;
+    font-size:1.05rem;
+    line-height:1.55;
+    color:#5a4b6b;
+    margin-bottom:30px;
+  }
+  .reveal{
+    opacity:0;
+    transform:translateY(40px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ---------- MIAMI FRIENDS ---------- */
+  #miami{ background:var(--cream); }
+  .gallery{
+    display:flex;
+    gap:16px;
+    overflow-x:auto;
+    width:100%;
+    max-width:900px;
+    padding:10px 8px 22px;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+  }
+  .gallery img{
+    scroll-snap-align:center;
+    height:340px;
+    width:260px;
+    object-fit:cover;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.18);
+    flex:0 0 auto;
+    transition:transform 0.3s ease;
+  }
+  .gallery img:active{ transform:scale(0.97); }
+  .swipe-hint{
+    font-size:0.85rem;
+    color:#9b8caf;
+    margin-top:-8px;
+  }
+
+  /* ---------- TRANSITION STATEMENT ---------- */
+  #transition{
+    background:var(--deep);
+    color:white;
+  }
+  #transition .big-line{
+    font-size:clamp(1.9rem,7vw,3.2rem);
+    font-weight:800;
+    line-height:1.25;
+    max-width:680px;
+  }
+  #transition .big-line span{
+    color:var(--gold);
+  }
+  #transition .heart{
+    font-size:3rem;
+    margin-top:24px;
+    animation:heartbeat 1.4s infinite;
+  }
+  @keyframes heartbeat{
+    0%,100%{transform:scale(1);}
+    25%{transform:scale(1.18);}
+    40%{transform:scale(1);}
+  }
+
+  /* ---------- FAMILY / KEYS TRIP ---------- */
+  #family{
+    background:linear-gradient(180deg,#eaf7f5 0%, var(--cream) 100%);
+  }
+  .family-hero-img{
+    width:100%;
+    max-width:420px;
+    border-radius:22px;
+    box-shadow:0 14px 34px rgba(0,0,0,0.18);
+    margin-bottom:26px;
+  }
+  .video-frame{
+    width:100%;
+    max-width:460px;
+    margin-bottom:30px;
+    padding:12px;
+    border-radius:26px;
+    background:linear-gradient(135deg,var(--pink),var(--gold),var(--teal));
+    background-size:200% 200%;
+    animation:glow-move 6s ease infinite;
+    box-shadow:0 16px 40px rgba(0,0,0,0.25);
+  }
+  @keyframes glow-move{
+    0%,100%{ background-position:0% 50%; }
+    50%{ background-position:100% 50%; }
+  }
+  .video-label{
+    color:white;
+    font-weight:800;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    font-size:0.85rem;
+    margin-bottom:10px;
+    text-shadow:0 2px 8px rgba(0,0,0,0.25);
+  }
+  .hero-video{
+    width:100%;
+    display:block;
+    border-radius:18px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);
+    background:#000;
+  }
+  .keys-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    max-width:520px;
+    width:100%;
+  }
+  .keys-grid img{
+    width:100%;
+    height:170px;
+    object-fit:cover;
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.15);
+    cursor:pointer;
+    transition:transform 0.25s ease;
+  }
+  .keys-grid img:hover{ transform:scale(1.03); }
+
+  /* lightbox */
+  #lightbox{
+    position:fixed;inset:0;
+    background:rgba(15,10,25,0.92);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:10000;
+    padding:20px;
+  }
+  #lightbox.open{ display:flex; }
+  #lightbox img{
+    max-width:92vw;
+    max-height:86vh;
+    border-radius:14px;
+    box-shadow:0 0 40px rgba(255,255,255,0.15);
+  }
+
+  /* ---------- LOVE NOTES ---------- */
+  #notes{
+    background:var(--deep);
+    color:white;
+  }
+  #notes h2{ color:white; }
+  .notes-grid{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    width:100%;
+    max-width:380px;
+  }
+  .flip-card{
+    width:100%;
+    height:170px;
+    perspective:1200px;
+    cursor:pointer;
+  }
+  .flip-inner{
+    position:relative;
+    width:100%;
+    height:100%;
+    transition:transform 0.6s cubic-bezier(.4,.2,.2,1);
+    transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{
+    transform:rotateY(180deg);
+  }
+  .flip-face{
+    position:absolute;
+    inset:0;
+    border-radius:18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    backface-visibility:hidden;
+    padding:18px;
+  }
+  .flip-front{
+    background:linear-gradient(135deg,#ff6fa5,#ffc65c);
+  }
+  .flip-front .name{
+    font-size:1.4rem;
+    font-weight:800;
+    color:white;
+  }
+  .flip-front .tap{
+    margin-top:8px;
+    font-size:0.8rem;
+    color:rgba(255,255,255,0.85);
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+  .flip-back{
+    background:white;
+    color:var(--deep);
+    transform:rotateY(180deg);
+    font-size:1.05rem;
+    line-height:1.5;
+    font-weight:600;
+  }
+  .flip-back .from{
+    margin-top:10px;
+    font-size:0.8rem;
+    color:var(--pink);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    font-weight:800;
+  }
+
+  /* ---------- FINALE ---------- */
+  #finale{
+    background:linear-gradient(160deg,#ffc65c 0%, #ff6fa5 55%, #ff4f8b 100%);
+    color:white;
+  }
+  #finale h2{ font-size:clamp(2rem,7vw,3rem); }
+  #finale .section-text{ color:rgba(255,255,255,0.92); }
+  #love-btn{
+    background:white;
+    color:var(--pink);
+    border:none;
+    font-weight:800;
+    font-size:1.1rem;
+    padding:16px 34px;
+    border-radius:999px;
+    box-shadow:0 10px 26px rgba(0,0,0,0.25);
+    cursor:pointer;
+    transition:transform 0.15s ease;
+  }
+  #love-btn:active{ transform:scale(0.95); }
+  .signoff{
+    margin-top:34px;
+    font-size:1.5rem;
+    font-weight:800;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="balloon" style="left:8%; animation-duration:9s; animation-delay:0s;">🎈</div>
+  <div class="balloon" style="left:22%; animation-duration:11s; animation-delay:1.5s;">🎈</div>
+  <div class="balloon" style="left:70%; animation-duration:8s; animation-delay:0.5s;">🎈</div>
+  <div class="balloon" style="left:85%; animation-duration:12s; animation-delay:2s;">🎈</div>
+  <div class="balloon" style="left:50%; animation-duration:10s; animation-delay:3s;">🎈</div>
+
+  <div class="hero-title">Happy 45th<br>Birthday, Mom!</div>
+  <div class="hero-sub">A little card, made just for you 💕</div>
+  <div class="hero-date">August 1st</div>
+  <div class="scroll-cue">↓</div>
+</section>
+
+<!-- MIAMI FRIENDS -->
+<section id="miami">
+  <div class="eyebrow reveal">Miami</div>
+  <h2 class="reveal">You are so loved.</h2>
+  <p class="section-text reveal">On our trip, you got to see all of your friends in Miami — and every single one of them adores you. Look how happy they were to see you!</p>
+  <div class="gallery reveal">
+    <img src="1.jpg" alt="Lauren with friends in the pool">
+    <img src="2.jpg" alt="Lauren with friends at home">
+    <img src="3.jpg" alt="Lauren with friends at the bar">
+    <img src="14.jpg" alt="Lauren with friends and family in Miami">
+    <img src="15.jpg" alt="Lauren with friends in Miami">
+    <img src="16.jpg" alt="Lauren with a big group of friends in Miami">
+    <img src="17.jpg" alt="Lauren with friends">
+    <img src="18.jpg" alt="Lauren with friends">
+    <img src="19.jpg" alt="Lauren hugging a friend">
+  </div>
+  <div class="swipe-hint reveal">← swipe →</div>
+</section>
+
+<!-- TRANSITION -->
+<section id="transition">
+  <div class="big-line reveal">But no one loves you<br><span>more than us.</span></div>
+  <div class="heart reveal">❤️</div>
+</section>
+
+<!-- FAMILY / KEYS -->
+<section id="family">
+  <div class="eyebrow reveal">The Florida Keys</div>
+  <h2 class="reveal">Your favorite crew.</h2>
+  <p class="section-text reveal">You bring a sense of adventure to our trips and our lives that brings us all so much happiness and laughter. This is us at our best — together.</p>
+
+  <div class="video-frame reveal">
+    <div class="video-label">✨ the highlight ✨</div>
+    <video class="hero-video" controls playsinline preload="auto">
+      <source src="IMG_5223.MOV">
+      Your browser doesn't support this video — try opening the page in Safari or on your phone.
+    </video>
+  </div>
+
+  <img class="family-hero-img reveal" src="4.jpg" alt="Family in the Florida Keys">
+  <div class="keys-grid reveal">
+    <img src="5.jpg" alt="Boat ride" onclick="openLightbox('5.jpg')">
+    <img src="6.jpg" alt="The boys on the boat" onclick="openLightbox('6.jpg')">
+    <img src="9.jpg" alt="Fishing catch" onclick="openLightbox('9.jpg')">
+    <img src="10.jpg" alt="Fishing catch" onclick="openLightbox('10.jpg')">
+    <img src="11.jpg" alt="Fishing catch" onclick="openLightbox('11.jpg')">
+    <img src="13.jpg" alt="Family on the beach" onclick="openLightbox('13.jpg')">
+    <img src="IMG_0853.jpeg" alt="Mom and Bobby in the hot tub" onclick="openLightbox('IMG_0853.jpeg')">
+    <img src="IMG_0857.jpeg" alt="Dad and Chris fishing off the dock" onclick="openLightbox('IMG_0857.jpeg')">
+    <img src="IMG_5003.jpeg" alt="Bobby and the shark statue" onclick="openLightbox('IMG_5003.jpeg')">
+    <img src="IMG_5008.jpeg" alt="Feeding the fish off the dock" onclick="openLightbox('IMG_5008.jpeg')">
+    <img src="IMG_5058.jpeg" alt="Wading through the mangroves" onclick="openLightbox('IMG_5058.jpeg')">
+    <img src="IMG_5078.jpeg" alt="Mom and Bobby on the boat" onclick="openLightbox('IMG_5078.jpeg')">
+    <img src="IMG_5101.jpeg" alt="Chris and Mom selfie" onclick="openLightbox('IMG_5101.jpeg')">
+    <img src="IMG_5138.jpeg" alt="Mom, Chris and Bobby" onclick="openLightbox('IMG_5138.jpeg')">
+  </div>
+</section>
+
+<!-- LOVE NOTES -->
+<section id="notes">
+  <div class="eyebrow reveal" style="color:var(--gold);">From your favorite people</div>
+  <h2 class="reveal">Tap a card 👇</h2>
+  <div class="notes-grid reveal">
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-face flip-front">
+          <div class="name">Dad</div>
+          <div class="tap">tap to reveal</div>
+        </div>
+        <div class="flip-face flip-back">
+          "Happy Birthday to my partner in crime. Couldn't ask for a better one."
+          <div class="from">— Dad</div>
+        </div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-face flip-front">
+          <div class="name">Chris</div>
+          <div class="tap">tap to reveal</div>
+        </div>
+        <div class="flip-face flip-back">
+          "I love you sweetheart. God Bless You."
+          <div class="from">— Chris</div>
+        </div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-face flip-front">
+          <div class="name">Bobby</div>
+          <div class="tap">tap to reveal</div>
+        </div>
+        <div class="flip-face flip-back">
+          "Thank you for always taking me places and being so fun. I love you so much."
+          <div class="from">— Bobby</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINALE -->
+<section id="finale">
+  <h2 class="reveal">Happy Birthday, Mom.</h2>
+  <p class="section-text reveal">Thank you for everything you do for all of us. Here's to 45 and to many, many more birthdays with your favorite people.</p>
+  <button id="love-btn" class="reveal" onclick="burstConfetti()">Tap for more love 🎉</button>
+  <div class="signoff reveal">We love you most. 💕<br>— Dad, Chris &amp; Bobby</div>
+</section>
+
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="Full size photo">
+</div>
+
+<script>
+  /* ---- scroll reveal ---- */
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); }
+    });
+  }, {threshold:0.15});
+  revealEls.forEach(el=>observer.observe(el));
+
+  /* ---- lightbox ---- */
+  function openLightbox(src){
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox(){
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  /* ---- lightweight confetti (no external deps) ---- */
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const colors = ['#ff6fa5','#ffc65c','#2ec4b6','#ff9770','#c77dff'];
+  let particles = [];
+  let animId = null;
+
+  function spawnParticles(count){
+    for(let i=0;i<count;i++){
+      particles.push({
+        x: Math.random()*canvas.width,
+        y: -20 - Math.random()*canvas.height*0.3,
+        r: 4 + Math.random()*5,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        vy: 2 + Math.random()*3,
+        vx: -1.5 + Math.random()*3,
+        rot: Math.random()*360,
+        vrot: -6 + Math.random()*12,
+        life: 0,
+        maxLife: 200 + Math.random()*100
+      });
+    }
+    if(!animId){ animate(); }
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vrot;
+      p.life++;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6);
+      ctx.restore();
+    });
+    particles = particles.filter(p=> p.y < canvas.height+30 && p.life < p.maxLife);
+    if(particles.length>0){
+      animId = requestAnimationFrame(animate);
+    } else {
+      animId = null;
+    }
+  }
+
+  function burstConfetti(){
+    spawnParticles(140);
+  }
+
+  // little celebratory burst on load
+  window.addEventListener('load', ()=> spawnParticles(60));
+</script>
+
+</body>
+</html>
