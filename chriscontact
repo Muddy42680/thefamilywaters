@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviation Flight Deck Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                    },
+                    colors: {
+                        hud: {
+                            cyan: '#00f0ff',
+                            green: '#00ff66',
+                            amber: '#ffaa00',
+                            red: '#ff3366',
+                            dark: '#0a0f1d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Custom Canvas & Radar Animations */
+        body {
+            background-color: #050811;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .glass-hud {
+            background: rgba(10, 20, 38, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.15), inset 0 0 15px rgba(0, 240, 255, 0.05);
+        }
+
+        .hud-border-corners {
+            position: relative;
+        }
+        .hud-border-corners::before, .hud-border-corners::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-color: #00f0ff;
+            border-style: solid;
+            pointer-events: none;
+        }
+        .hud-border-corners::before { top: -2px; left: -2px; border-width: 2px 0 0 2px; }
+        .hud-border-corners::after { top: -2px; right: -2px; border-width: 2px 2px 0 0; }
+
+        .scanline {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 40;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .radar-sweep {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, rgba(0, 240, 255, 0.4) 0deg, rgba(0, 240, 255, 0) 60deg);
+            animation: radarRotate 6s linear infinite;
+        }
+
+        @keyframes radarRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .glow-cyan {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.7), 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+        .glow-red {
+            text-shadow: 0 0 10px rgba(255, 51, 102, 0.8), 0 0 20px rgba(255, 51, 102, 0.5);
+        }
+
+        .action-link {
+            color: #3b82f6;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            transition: all 0.2s ease;
+        }
+        .action-link:hover {
+            color: #60a5fa;
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+
+        /* Jet animation in header */
+        @keyframes jetFly {
+            0% { transform: translateX(-120%) translateY(0); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateX(120vw) translateY(-40px); opacity: 0; }
+        }
+        .jet-animation {
+            animation: jetFly 12s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative select-none">
+    <div class="scanline"></div>
+
+    <!-- Background Dynamic Canvas -->
+    <canvas id="skyCanvas" class="fixed inset-0 w-full h-full z-0 pointer-events-none"></canvas>
+
+    <!-- Top Navigation HUD Header -->
+    <header class="relative z-10 w-full px-6 py-4 flex justify-between items-center border-b border-cyan-500/20 bg-slate-950/60 backdrop-blur-md">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-plane-departure text-cyan-400 text-2xl"></i>
+            <div>
+                <h1 class="font-orbitron font-extrabold text-lg sm:text-xl tracking-wider text-cyan-400 glow-cyan">CHRIS AREO FLIGHT INFO ACCESS</h1>
+                <p class="text-xs text-slate-400 tracking-widest font-mono">SECURE INFO ROOM ACCESS</p>
+            </div>
+        </div>
+
+        <div class="hidden sm:flex items-center gap-6 font-mono text-xs text-cyan-300/80">
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>RADAR: <span class="text-emerald-400">ONLINE</span></span>
+            </div>
+            <div>ALT: <span id="hudAlt">34,000</span> FT</div>
+            <div>SPD: <span id="hudSpd">485</span> KTS</div>
+        </div>
+    </header>
+
+    <!-- Main Center Interactive Container -->
+    <main class="relative z-20 flex-grow flex items-center justify-center p-4 sm:p-6">
+        
+        <!-- Gate Screen (Room Code Input) -->
+        <div id="codeGateSection" class="w-full max-w-md transition-all duration-500 transform">
+            <div class="glass-hud hud-border-corners rounded-xl p-6 sm:p-8 relative overflow-hidden">
+                
+                <!-- Radar Background Decoration -->
+                <div class="absolute -right-20 -bottom-20 w-56 h-56 rounded-full border border-cyan-500/20 pointer-events-none opacity-30">
+                    <div class="radar-sweep"></div>
+                </div>
+
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-950/60 border border-cyan-400/30 mb-4 text-cyan-400 shadow-lg shadow-cyan-500/20">
+                        <i class="fa-solid fa-shield-halved text-2xl"></i>
+                    </div>
+                    <h2 class="font-orbitron text-lg sm:text-xl font-bold text-white tracking-wide uppercase">Enter Room Code</h2>
+                    <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">TO SEE FLIGHT DECK INFO</p>
+                </div>
+
+                <form id="codeForm" onsubmit="handleCodeSubmit(event)" class="space-y-4">
+                    <div class="relative">
+                        <label for="roomCodeInput" class="block text-xs font-mono text-cyan-400 mb-1 tracking-wider uppercase">Authentication Code</label>
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="roomCodeInput" 
+                                placeholder="ENTER CODE HERE" 
+                                maxlength="10"
+                                autocomplete="off"
+                                class="w-full bg-slate-900/90 border-2 border-cyan-500/40 focus:border-cyan-400 rounded-lg py-3 px-4 text-center font-orbitron text-lg tracking-widest text-cyan-300 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 uppercase transition-all"
+                            />
+                            <div class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error / Warning Banner -->
+                    <div id="errorAlert" class="hidden p-3 rounded-lg bg-red-950/80 border border-red-500/60 text-red-300 text-xs font-mono flex items-center gap-2 animate-bounce">
+                        <i class="fa-solid fa-triangle-exclamation text-red-400 text-base"></i>
+                        <span id="errorMessage">Code expired or invalid</span>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="w-full py-3.5 px-6 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-orbitron font-bold text-sm tracking-wider uppercase transition-all shadow-lg shadow-cyan-500/30 active:scale-[0.99] flex items-center justify-center gap-2">
+                        <span>AUTHORIZE ACCESS</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="mt-6 pt-4 border-t border-cyan-500/10 flex justify-between text-[10px] font-mono text-slate-500">
+                    <span>CLEARANCE LEVEL: TOP SECRET</span>
+                    <span>STATUS: ENCRYPTED</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Granted Info Screen (Hidden Initially) -->
+        <div id="infoDeckSection" class="hidden w-full max-w-xl transition-all duration-700 transform opacity-0 scale-95">
+            <div class="glass-hud hud-border-corners rounded-xl p-6 sm:p-8 relative">
+                
+                <!-- Status Header Banner -->
+                <div class="flex items-center justify-between pb-4 mb-6 border-b border-emerald-500/30">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 rounded-md bg-emerald-950/80 border border-emerald-500/50 text-emerald-400">
+                            <i class="fa-solid fa-circle-check text-lg"></i>
+                        </span>
+                        <div>
+                            <h3 class="font-orbitron font-bold text-emerald-400 text-sm tracking-wider uppercase">ACCESS GRANTED</h3>
+                            <p class="text-[11px] text-slate-400 font-mono">ROOM CODE: JR8DF8S VERIFIED</p>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded text-[10px] font-mono bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">CONFIDENTIAL</span>
+                </div>
+
+                <!-- Core Information Content -->
+                <div class="space-y-6">
+                    <div class="text-center sm:text-left">
+                        <h2 class="font-orbitron font-extrabold text-2xl text-white tracking-wide mb-1">FLIGHT DECK CONTACT DETAILS</h2>
+                        <p class="text-xs text-slate-400">Authorized personnel communication link channels.</p>
+                    </div>
+
+                    <!-- Direct Action Contact Cards -->
+                    <div class="grid grid-cols-1 gap-4 font-mono">
+                        
+                        <!-- Phone Number Box -->
+                        <div class="p-4 rounded-lg bg-slate-900/80 border border-cyan-500/30 hover:border-cyan-400/60 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">Phone Direct</div>
+                                    <a href="tel:5168603545" class="action-link text-lg font-bold">516 860 3545</a>
+                                </div>
+                            </div>
+                            <a href="tel:5168603545" class="self-start sm:self-auto px-3 py-1.5 rounded bg-blue-600/20 border border-blue-500/40 text-blue-300 hover:bg-blue-600/40 text-xs flex items-center gap-2 transition-all">
+                                <i class="fa-solid fa-phone-flip text-xs"></i>
+                                <span>Call Now</span>
+                            </a>
+                        </div>
+
+                        <!-- Email Box -->
+                        <div class="p-4 rounded-lg bg-slate-900/80 border border-cyan-500/30 hover:border-cyan-400/60 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">Contact Email</div>
+                                    <a href="mailto:chrisw81114@gmail.com" class="action-link text-base sm:text-lg font-bold break-all">chrisw81114@gmail.com</a>
+                                </div>
+                            </div>
+                            <a href="mailto:chrisw81114@gmail.com" class="self-start sm:self-auto px-3 py-1.5 rounded bg-blue-600/20 border border-blue-500/40 text-blue-300 hover:bg-blue-600/40 text-xs flex items-center gap-2 transition-all">
+                                <i class="fa-solid fa-paper-plane text-xs"></i>
+                                <span>Gmail</span>
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <!-- Apple / iOS Specific Features Banner -->
+                    <div id="appleFeatureCard" class="hidden p-4 rounded-lg bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-400/40 shadow-inner">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2 text-cyan-300 font-orbitron text-xs font-bold">
+                                <i class="fa-brands fa-apple text-base text-white"></i>
+                                <span>APPLE / iOS DECK UTILITIES</span>
+                            </div>
+                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">DEVICE DETECTED</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-3">Save contact details directly into Apple Contacts or trigger mail natively.</p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <button 
+                                onclick="downloadVCard()" 
+                                class="w-full py-2.5 px-3 rounded bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 text-cyan-200 text-xs font-mono font-semibold flex items-center justify-center gap-2 transition-all active:scale-95">
+                                <i class="fa-solid fa-address-book text-cyan-400"></i>
+                                <span class="action-link text-cyan-200 no-underline">Save to Apple Contacts</span>
+                            </button>
+
+                            <a 
+                                href="mailto:chrisw81114@gmail.com?subject=Aviation%20Deck%20Inquiry" 
+                                class="w-full py-2.5 px-3 rounded bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/50 text-blue-200 text-xs font-mono font-semibold flex items-center justify-center gap-2 transition-all active:scale-95">
+                                <i class="fa-solid fa-arrow-up-right-from-square text-blue-400"></i>
+                                <span class="action-link">Open Apple Mail</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer Reset Button -->
+                <div class="mt-8 pt-4 border-t border-cyan-500/10 flex justify-between items-center text-xs font-mono">
+                    <span class="text-slate-500">DECK ID: #516-860</span>
+                    <button onclick="lockGate()" class="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-all">
+                        <i class="fa-solid fa-lock text-xs"></i>
+                        <span class="underline">Lock Session</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom HUD Cockpit Bar -->
+    <footer class="relative z-10 w-full px-6 py-3 border-t border-cyan-500/20 bg-slate-950/80 backdrop-blur-md text-[11px] font-mono text-slate-400 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div class="flex items-center gap-4">
+            <span class="text-cyan-400"><i class="fa-solid fa-satellite mr-1"></i> SATELLITE: CONNECTED</span>
+            <span class="hidden md:inline">FREQ: 121.50 MHz</span>
+        </div>
+        <div id="appleStatusText" class="text-slate-400">
+            PLATFORM: SYSTEM READY
+        </div>
+    </footer>
+
+    <script>
+        // Target valid authorization code
+        const VALID_CODE = "JR8DF8S";
+
+        // Animated Canvas Background with Radar lines & Floating Jet Silhouettes
+        const canvas = document.getElementById('skyCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let jets = [];
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Create random subtle flying jet silhouettes
+        function initJets() {
+            jets = [];
+            for (let i = 0; i < 4; i++) {
+                jets.push({
+                    x: Math.random() * width,
+                    y: Math.random() * (height * 0.6),
+                    speed: 0.5 + Math.random() * 1.2,
+                    size: 14 + Math.random() * 12,
+                    angle: (Math.random() * 20 - 10) * Math.PI / 180,
+                    opacity: 0.15 + Math.random() * 0.25
+                });
+            }
+        }
+        initJets();
+
+        function drawJet(x, y, size, angle, opacity) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            ctx.fillStyle = `rgba(0, 240, 255, ${opacity})`;
+            
+            // Draw sleek jet silhouette outline
+            ctx.beginPath();
+            ctx.moveTo(size * 1.5, 0); // Nose
+            ctx.lineTo(-size, -size * 0.8); // Left wing
+            ctx.lineTo(-size * 0.5, 0); // Body inset
+            ctx.lineTo(-size, size * 0.8); // Right wing
+            ctx.closePath();
+            ctx.fill();
+
+            // Cockpit glow
+            ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 1.5})`;
+            ctx.beginPath();
+            ctx.arc(size * 0.5, 0, size * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw Subtle Grid Pattern
+            ctx.strokeStyle = 'rgba(0, 240, 255, 0.03)';
+            ctx.lineWidth = 1;
+            const gridSize = 60;
+
+            for (let x = 0; x < width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            // Update & Draw Jets
+            jets.forEach(jet => {
+                jet.x += jet.speed;
+                jet.y += Math.sin(jet.x * 0.005) * 0.3;
+
+                if (jet.x > width + 50) {
+                    jet.x = -50;
+                    jet.y = Math.random() * (height * 0.6);
+                }
+
+                drawJet(jet.x, jet.y, jet.size, jet.angle, jet.opacity);
+            });
+
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // Detect Apple User / iOS / Mac Platform
+        function isAppleUser() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            const platform = navigator.platform || '';
+            const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+            const isMac = /Macintosh|MacIntel|MacPPC|Mac68K/.test(platform) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+            return isIOS || isMac;
+        }
+
+        // Initialize UI states based on platform
+        window.onload = function() {
+            const appleCard = document.getElementById('appleFeatureCard');
+            const appleStatusText = document.getElementById('appleStatusText');
+
+            if (isAppleUser()) {
+                appleCard.classList.remove('hidden');
+                appleStatusText.innerHTML = '<span class="text-cyan-400"><i class="fa-brands fa-apple mr-1"></i> APPLE ECOSYSTEM DETECTED</span>';
+            } else {
+                // Show Apple card anyway so all users can access contacts download feature
+                appleCard.classList.remove('hidden');
+                appleStatusText.innerHTML = '<span><i class="fa-solid fa-desktop mr-1"></i> STANDARD SYSTEM DETECTED</span>';
+            }
+
+            // Animate dynamic telemetry readings in header
+            setInterval(() => {
+                document.getElementById('hudAlt').innerText = (34000 + Math.floor(Math.random() * 80 - 40)).toLocaleString();
+                document.getElementById('hudSpd').innerText = 480 + Math.floor(Math.random() * 10 - 5);
+            }, 2000);
+        };
+
+        // Code Form Handling
+        function handleCodeSubmit(event) {
+            event.preventDefault();
+            
+            const inputField = document.getElementById('roomCodeInput');
+            const userCode = inputField.value.trim().toUpperCase();
+            const errorAlert = document.getElementById('errorAlert');
+
+            if (userCode === VALID_CODE) {
+                // Hide Error if any
+                errorAlert.classList.add('hidden');
+
+                // Transition Screens
+                const codeGate = document.getElementById('codeGateSection');
+                const infoDeck = document.getElementById('infoDeckSection');
+
+                codeGate.classList.add('scale-95', 'opacity-0');
+                
+                setTimeout(() => {
+                    codeGate.classList.add('hidden');
+                    infoDeck.classList.remove('hidden');
+                    
+                    // Trigger reflow & show
+                    setTimeout(() => {
+                        infoDeck.classList.remove('opacity-0', 'scale-95');
+                        infoDeck.classList.add('opacity-100', 'scale-100');
+                    }, 50);
+                }, 400);
+
+            } else {
+                // Invalid or Expired Code
+                errorAlert.classList.remove('hidden');
+                inputField.classList.add('border-red-500');
+                
+                // Shake effect on form
+                const formCard = codeGateSection.querySelector('.glass-hud');
+                formCard.classList.add('translate-x-2');
+                setTimeout(() => formCard.classList.remove('translate-x-2'), 100);
+                setTimeout(() => formCard.classList.add('-translate-x-2'), 200);
+                setTimeout(() => formCard.classList.remove('-translate-x-2'), 300);
+            }
+        }
+
+        function lockGate() {
+            const codeGate = document.getElementById('codeGateSection');
+            const infoDeck = document.getElementById('infoDeckSection');
+            const inputField = document.getElementById('roomCodeInput');
+
+            inputField.value = '';
+            infoDeck.classList.remove('opacity-100', 'scale-100');
+            infoDeck.classList.add('opacity-0', 'scale-95');
+
+            setTimeout(() => {
+                infoDeck.classList.add('hidden');
+                codeGate.classList.remove('hidden');
+                setTimeout(() => {
+                    codeGate.classList.remove('opacity-0', 'scale-95');
+                }, 50);
+            }, 400);
+        }
+
+        // Dynamic Apple / iOS vCard (.vcf) Contact Downloader
+        function downloadVCard() {
+            const vCardData = 
+`BEGIN:VCARD
+VERSION:3.0
+FN:Chris W
+TEL;TYPE=CELL,VOICE:5168603545
+EMAIL;TYPE=INTERNET,PREF:chrisw81114@gmail.com
+NOTE:Aviation Flight Deck Contact
+END:VCARD`;
+
+            const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', 'ChrisW_Contact.vcf');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
