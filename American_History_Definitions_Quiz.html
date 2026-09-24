@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>American History – Important Words Quiz</title>
+  <style>
+    :root {
+      --primary: #1e3a5f;
+      --accent: #c45c26;
+      --correct: #2e7d32;
+      --wrong: #c62828;
+      --bg: #f5f0e6;
+      --card: #ffffff;
+      --text: #2c2c2c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin-top: 0.25rem;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .screen {
+      display: none;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .screen h2 {
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+      font-size: 1.4rem;
+    }
+
+    .screen p {
+      margin-bottom: 1.25rem;
+      color: #555;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn:hover {
+      background: #a34a1e;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: #152a45;
+    }
+
+    .progress-bar-wrap {
+      background: #e0d9cc;
+      border-radius: 999px;
+      height: 10px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 1rem;
+      text-align: right;
+    }
+
+    #quiz-screen {
+      text-align: left;
+    }
+
+    .question-number {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .question-text {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 1.25rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .option {
+      background: #f8f5ef;
+      border: 2px solid #e0d9cc;
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+
+    .option:hover:not(.disabled) {
+      border-color: var(--accent);
+      background: #fff8f0;
+    }
+
+    .option.selected {
+      border-color: var(--primary);
+      background: #e8eef5;
+    }
+
+    .option.correct {
+      border-color: var(--correct);
+      background: #e8f5e9;
+    }
+
+    .option.incorrect {
+      border-color: var(--wrong);
+      background: #fce8e8;
+    }
+
+    .option.disabled {
+      cursor: default;
+      opacity: 0.85;
+    }
+
+    .feedback {
+      margin-top: 1.25rem;
+      padding: 0.9rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.correct {
+      background: #e8f5e9;
+      color: var(--correct);
+      border: 1px solid #a5d6a7;
+    }
+
+    .feedback.incorrect {
+      background: #fce8e8;
+      color: var(--wrong);
+      border: 1px solid #ef9a9a;
+    }
+
+    .next-btn-wrap {
+      margin-top: 1.5rem;
+      text-align: center;
+      display: none;
+    }
+
+    .next-btn-wrap.show {
+      display: block;
+    }
+
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .score-circle span {
+      font-size: 0.75rem;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+
+    .score-message {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      color: #444;
+    }
+
+    .review-list {
+      text-align: left;
+      margin-top: 1.5rem;
+      max-height: 280px;
+      overflow-y: auto;
+      border: 1px solid #e0d9cc;
+      border-radius: 8px;
+      padding: 0.75rem;
+    }
+
+    .review-item {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.9rem;
+    }
+
+    .review-item:last-child {
+      border-bottom: none;
+    }
+
+    .review-item .term {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .review-item.wrong .term {
+      color: var(--wrong);
+    }
+
+    .review-item.correct .term {
+      color: var(--correct);
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.8rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>American History – Important Words</h1>
+    <p>Interactive Definitions Quiz</p>
+  </header>
+
+  <div class="container">
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen active">
+      <h2>Ready to Quiz Yourself?</h2>
+      <p>
+        This quiz covers the 24 key terms from your worksheet.<br>
+        You'll see a mix of "What does this term mean?" and "Which term matches this definition?" questions.
+      </p>
+      <p><strong>24 questions</strong> · Multiple choice · Instant feedback</p>
+      <button class="btn" id="start-btn">Start Quiz</button>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="screen">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="progress-text" id="progress-text">Question 1 of 24</div>
+
+      <div class="question-number" id="question-type">Definition</div>
+      <div class="question-text" id="question-text"></div>
+
+      <div class="options" id="options"></div>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="next-btn-wrap" id="next-wrap">
+        <button class="btn" id="next-btn">Next Question</button>
+      </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen">
+      <h2>Quiz Complete!</h2>
+      <div class="score-circle" id="score-circle">
+        <div id="score-value">0</div>
+        <span>out of 24</span>
+      </div>
+      <p class="score-message" id="score-message"></p>
+      <button class="btn" id="restart-btn">Try Again</button>
+      <button class="btn btn-secondary" id="review-btn" style="margin-left:0.5rem">Review Answers</button>
+
+      <div class="review-list" id="review-list" style="display:none"></div>
+    </div>
+  </div>
+
+  <footer>
+    Based on your American History "Important Words to Know" worksheet
+  </footer>
+
+  <script>
+    (function () {
+      // ========== DATA ==========
+      var terms = [
+        { term: "Event", definition: "An important significance or occurrence (example: 9/11)" },
+        { term: "Cause", definition: "Something or someone that brings/starts a result or condition; the reason why the event happens" },
+        { term: "Effect", definition: "An event or condition that is produced by the cause; the result" },
+        { term: "Social", definition: "The way in which people interact" },
+        { term: "Economic", definition: "The way in which a country makes and spends money" },
+        { term: "Political", definition: "The way people in a country view the operations and functions of government" },
+        { term: "Autobiography", definition: "An account of somebody's life written by that person" },
+        { term: "Biography", definition: "An account of somebody written by another person" },
+        { term: "Culture", definition: "A way of life (examples: language, food, shelter, customs)" },
+        { term: "Racism", definition: "The belief that one's own racial group is superior to others" },
+        { term: "Prejudice", definition: "Making a decision about a person or a group of people without sufficient knowledge" },
+        { term: "Stereotype", definition: "A judgement made about an entire group of people" },
+        { term: "Conflict", definition: "A struggle, disagreement, or opposing views that creates a problem" },
+        { term: "Internal Conflict", definition: "An issue within oneself (think: angel in one ear and devil in the other)" },
+        { term: "External Conflict", definition: "An issue involving at least two people or countries that disagree" },
+        { term: "Compromise", definition: "A solution to a conflict in which each side gives a little to get a little" },
+        { term: "Resolution", definition: "The solution to the conflict; the conflict has been solved" },
+        { term: "Foreign", definition: "Issues or events that occur/happen outside of the country" },
+        { term: "Domestic", definition: "Issues or events that occur inside the country" },
+        { term: "Primary Source", definition: "An eyewitness, first-hand account of the event" },
+        { term: "Secondary Source", definition: "An account of events by someone who did not experience them first-hand" },
+        { term: "Tariffs", definition: "A tax or duty on imported goods" },
+        { term: "Import", definition: "To buy goods from foreign markets" },
+        { term: "Export", definition: "To sell or send goods to foreign markets (to move goods outward)" }
+      ];
+
+      // ========== STATE ==========
+      var questions = [];
+      var currentIndex = 0;
+      var score = 0;
+      var answers = [];
+
+      // ========== HELPERS ==========
+      function shuffle(array) {
+        var arr = array.slice();
+        for (var i = arr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = temp;
+        }
+        return arr;
+      }
+
+      function getWrongDefinitions(correctDef, count) {
+        count = count || 3;
+        var others = [];
+        for (var i = 0; i < terms.length; i++) {
+          if (terms[i].definition !== correctDef) {
+            others.push(terms[i].definition);
+          }
+        }
+        return shuffle(others).slice(0, count);
+      }
+
+      function getWrongTerms(correctTerm, count) {
+        count = count || 3;
+        var others = [];
+        for (var i = 0; i < terms.length; i++) {
+          if (terms[i].term !== correctTerm) {
+            others.push(terms[i].term);
+          }
+        }
+        return shuffle(others).slice(0, count);
+      }
+
+      function buildQuestions() {
+        var qs = [];
+        var shuffledTerms = shuffle(terms);
+
+        for (var i = 0; i < shuffledTerms.length; i++) {
+          var item = shuffledTerms[i];
+          if (i % 2 === 0) {
+            // Ask for the definition of the term
+            var wrongs = getWrongDefinitions(item.definition);
+            var options = shuffle([item.definition].concat(wrongs));
+            qs.push({
+              type: "term-to-def",
+              prompt: 'What is the definition of "' + item.term + '"?',
+              options: options,
+              correct: item.definition,
+              term: item.term
+            });
+          } else {
+            // Ask which term matches the definition
+            var wrongs2 = getWrongTerms(item.term);
+            var options2 = shuffle([item.term].concat(wrongs2));
+            qs.push({
+              type: "def-to-term",
+              prompt: 'Which term matches this definition?\n\n"' + item.definition + '"',
+              options: options2,
+              correct: item.term,
+              term: item.term
+            });
+          }
+        }
+        return shuffle(qs);
+      }
+
+      // ========== UI ==========
+      function showScreen(id) {
+        var screens = document.querySelectorAll(".screen");
+        for (var i = 0; i < screens.length; i++) {
+          screens[i].classList.remove("active");
+        }
+        document.getElementById(id).classList.add("active");
+      }
+
+      function updateProgress() {
+        var pct = (currentIndex / questions.length) * 100;
+        document.getElementById("progress-bar").style.width = pct + "%";
+        document.getElementById("progress-text").textContent =
+          "Question " + (currentIndex + 1) + " of " + questions.length;
+      }
+
+      function renderQuestion() {
+        var q = questions[currentIndex];
+        updateProgress();
+
+        document.getElementById("question-type").textContent =
+          q.type === "term-to-def" ? "Term → Definition" : "Definition → Term";
+
+        document.getElementById("question-text").textContent = q.prompt;
+
+        var optionsEl = document.getElementById("options");
+        optionsEl.innerHTML = "";
+
+        for (var i = 0; i < q.options.length; i++) {
+          (function (opt) {
+            var div = document.createElement("div");
+            div.className = "option";
+            div.textContent = opt;
+            div.setAttribute("data-value", opt);
+            div.addEventListener("click", function () {
+              selectOption(div, opt);
+            });
+            optionsEl.appendChild(div);
+          })(q.options[i]);
+        }
+
+        var feedback = document.getElementById("feedback");
+        feedback.className = "feedback";
+        feedback.textContent = "";
+        document.getElementById("next-wrap").classList.remove("show");
+      }
+
+      function selectOption(el, value) {
+        var q = questions[currentIndex];
+        var options = document.querySelectorAll(".option");
+
+        for (var i = 0; i < options.length; i++) {
+          options[i].classList.add("disabled");
+          // remove listeners by cloning
+          var clone = options[i].cloneNode(true);
+          options[i].parentNode.replaceChild(clone, options[i]);
+        }
+
+        // re-query after clone
+        options = document.querySelectorAll(".option");
+        el = null;
+        for (var j = 0; j < options.length; j++) {
+          if (options[j].getAttribute("data-value") === value) {
+            el = options[j];
+            break;
+          }
+        }
+        if (el) el.classList.add("selected");
+
+        var isCorrect = value === q.correct;
+
+        if (isCorrect) {
+          if (el) el.classList.add("correct");
+          score++;
+          var fb = document.getElementById("feedback");
+          fb.className = "feedback show correct";
+          fb.textContent = "Correct!";
+        } else {
+          if (el) el.classList.add("incorrect");
+          for (var k = 0; k < options.length; k++) {
+            if (options[k].getAttribute("data-value") === q.correct) {
+              options[k].classList.add("correct");
+            }
+          }
+          var fb2 = document.getElementById("feedback");
+          fb2.className = "feedback show incorrect";
+          fb2.textContent = 'Incorrect. The correct answer is: "' + q.correct + '"';
+        }
+
+        answers.push({
+          correct: isCorrect,
+          userAnswer: value,
+          correctAnswer: q.correct,
+          term: q.term,
+          prompt: q.prompt
+        });
+
+        document.getElementById("next-wrap").classList.add("show");
+
+        var nextBtn = document.getElementById("next-btn");
+        if (currentIndex === questions.length - 1) {
+          nextBtn.textContent = "See Results";
+        } else {
+          nextBtn.textContent = "Next Question";
+        }
+      }
+
+      function nextQuestion() {
+        currentIndex++;
+        if (currentIndex >= questions.length) {
+          showResults();
+        } else {
+          renderQuestion();
+        }
+      }
+
+      function showResults() {
+        showScreen("results-screen");
+        document.getElementById("score-value").textContent = score;
+
+        var pct = Math.round((score / questions.length) * 100);
+        var msg = "";
+        if (pct === 100) msg = "Perfect score! You know these terms cold.";
+        else if (pct >= 85) msg = "Excellent work! You're ready for the quiz.";
+        else if (pct >= 70) msg = "Good job! A little more review and you'll nail it.";
+        else if (pct >= 50) msg = "Keep practicing – you're getting there.";
+        else msg = "Review the worksheet and try again. You've got this!";
+
+        document.getElementById("score-message").textContent = msg;
+        document.getElementById("review-list").style.display = "none";
+      }
+
+      function showReview() {
+        var list = document.getElementById("review-list");
+        list.style.display = "block";
+        list.innerHTML = "";
+
+        for (var i = 0; i < answers.length; i++) {
+          var a = answers[i];
+          var div = document.createElement("div");
+          div.className = "review-item " + (a.correct ? "correct" : "wrong");
+          var html = '<span class="term">' + (i + 1) + ". " + a.term + "</span><br>";
+          html += "Your answer: " + a.userAnswer + "<br>";
+          if (!a.correct) {
+            html += "Correct: " + a.correctAnswer;
+          }
+          div.innerHTML = html;
+          list.appendChild(div);
+        }
+      }
+
+      function startQuiz() {
+        questions = buildQuestions();
+        currentIndex = 0;
+        score = 0;
+        answers = [];
+        showScreen("quiz-screen");
+        renderQuestion();
+      }
+
+      // ========== EVENT LISTENERS (attached after DOM is ready) ==========
+      function init() {
+        var startBtn = document.getElementById("start-btn");
+        var nextBtn = document.getElementById("next-btn");
+        var restartBtn = document.getElementById("restart-btn");
+        var reviewBtn = document.getElementById("review-btn");
+
+        if (startBtn) {
+          startBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            startQuiz();
+          });
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            nextQuestion();
+          });
+        }
+
+        if (restartBtn) {
+          restartBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            startQuiz();
+          });
+        }
+
+        if (reviewBtn) {
+          reviewBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            showReview();
+          });
+        }
+      }
+
+      // Run when DOM is ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
