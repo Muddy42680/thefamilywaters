@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Vocab Flash Cards</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  html,body{margin:0;height:100%;background:#0f172a;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+  #app{height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  #top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px;font-size:14px;color:#cbd5e1}
+  #top .grp{display:flex;gap:6px;align-items:center}
+  .chip{background:#1e293b;border:1px solid #334155;color:#e2e8f0;border-radius:999px;padding:6px 12px;font-size:13px}
+  .chip.on{background:#2563eb;border-color:#2563eb;color:#fff}
+  #bar{flex:0 0 5px;background:#1e293b;margin:0 12px;border-radius:3px;overflow:hidden}
+  #fill{height:100%;width:0;background:#22c55e;transition:width .25s}
+  #main{flex:1;display:flex;align-items:stretch;gap:10px;padding:8px 12px;min-height:0}
+  .nav{flex:0 0 64px;background:#1e293b;border:1px solid #334155;border-radius:16px;color:#fff;font-size:30px}
+  .nav:active{background:#334155}
+  #scene{flex:1;perspective:1200px;min-width:0}
+  #card{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s}
+  #card.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px 22px}
+  .front{background:linear-gradient(135deg,#2563eb,#7c3aed)}
+  .back{background:linear-gradient(135deg,#0d9488,#16a34a);transform:rotateY(180deg)}
+  .label{position:absolute;top:10px;left:16px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+  .word{font-size:clamp(28px,11vh,64px);font-weight:800;line-height:1.1}
+  .def{font-size:clamp(17px,6.2vh,30px);line-height:1.3;font-weight:500;overflow:auto;max-height:100%}
+  .hint{position:absolute;bottom:8px;font-size:12px;opacity:.65}
+  #bottom{display:flex;justify-content:center;gap:10px;padding:4px 12px 8px}
+  #bottom button{flex:1;max-width:220px;border-radius:12px;border:none;padding:9px;font-size:15px;font-weight:600;color:#fff}
+  #miss{background:#dc2626}#know{background:#16a34a}
+  #done{display:none;position:absolute;inset:0;background:#0f172aee;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;z-index:5}
+  #done h1{margin:0;font-size:32px}
+  #done button{background:#2563eb;color:#fff;border:none;border-radius:12px;padding:12px 22px;font-size:17px;font-weight:600}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="top">
+    <div class="grp"><span id="count"></span><span id="known"></span></div>
+    <div class="grp">
+      <button class="chip" id="modeBtn">Word first</button>
+      <button class="chip" id="shufBtn">Shuffle</button>
+      <button class="chip" id="unkBtn">Only missed: off</button>
+    </div>
+  </div>
+  <div id="bar"><div id="fill"></div></div>
+  <div id="main">
+    <button class="nav" id="prev" aria-label="Previous">‹</button>
+    <div id="scene"><div id="card">
+      <div class="face front"><div class="label" id="fl"></div><div id="ft"></div><div class="hint">tap to flip</div></div>
+      <div class="face back"><div class="label" id="bl"></div><div id="bt"></div></div>
+    </div></div>
+    <button class="nav" id="next" aria-label="Next">›</button>
+  </div>
+  <div id="bottom">
+    <button id="miss">✗ Still learning</button>
+    <button id="know">✓ Got it</button>
+  </div>
+</div>
+<div id="done"><h1>🎉 Deck complete!</h1><div id="doneMsg"></div><button id="again">Start over</button></div>
+
+<script>
+const WORDS = [
+["colony","a country or area under the full or partial political control of another country, typically a distant one, and occupied by settlers from that country"],
+["agriculture","practice of farming, for the growing and production of crops, livestock, or poultry."],
+["colonize","Europeans come to settle among and establish political control over (the indigenous people of an area)."],
+["government","The political system in which a nation operates/functions."],
+["economy","the way in which a country makes and spends money."],
+["missionary","a person sent on a religious mission, especially one sent to promote Christianity in a foreign area."],
+["Encomienda System","A Spanish system where colonists were given the right to demand labor and payment from Indigenous people in an area, supposedly in exchange for protecting them and teaching them Christianity. In reality it often meant forced labor."],
+["conquest","the subjugation and control of a place or people by use of military force."],
+["assimilation","to absorb a group into the culture of a larger population."],
+["servitude","the state of being a slave or completely subject to someone more powerful."],
+["Native American","the indigenous (original) people of North, Central, and South America."],
+["Doctrine of Discovery","established a spiritual, political, and legal justification for colonization and seizure of land not inhabited by Christians."],
+["exploration","Europe was the first continent to explore and colonize the Americas."],
+["indigenous","the original or native people in a particular place."],
+["embark","to begin a course of action like an exploration."],
+["class system","a system in which social status is determined by the family into which a person is born."],
+["diplomacy","the art of dealing with people in a sensitive and effective way."],
+["covenant","an agreement which brings about a relationship of commitment."],
+["compact","a formal agreement or contract between two or more parties."],
+["monarchy","a form of government with a monarch (King or Queen) at the head."]
+].map(([w,d])=>({w,d}));
+
+let deck=[...WORDS], idx=0, defFirst=false, onlyMissed=false;
+let status = {}; // word -> 'know' | 'miss'
+try{ status = JSON.parse(localStorage.getItem('vocabStatus')||'{}'); }catch(e){}
+const $=id=>document.getElementById(id);
+const card=$('card');
+
+function save(){ try{localStorage.setItem('vocabStatus',JSON.stringify(status));}catch(e){} }
+function build(){
+  let base=[...WORDS];
+  if(onlyMissed) base=base.filter(c=>status[c.w]!=='know');
+  deck = shuffled ? base.sort(()=>Math.random()-.5) : base;
+  idx=0; render(true);
+}
+let shuffled=false;
+function render(noAnim){
+  $('done').style.display='none';
+  if(!deck.length){ finish(); return; }
+  const c=deck[idx];
+  if(noAnim){card.style.transition='none';}
+  card.classList.remove('flipped');
+  if(noAnim){void card.offsetWidth;card.style.transition='';}
+  const front = defFirst ? c.d : c.w, back = defFirst ? c.w : c.d;
+  $('ft').className = defFirst?'def':'word'; $('bt').className = defFirst?'word':'def';
+  $('ft').textContent=front; $('bt').textContent=back;
+  $('fl').textContent = defFirst?'Definition':'Word';
+  $('bl').textContent = defFirst?'Word':'Definition';
+  $('count').textContent=`Card ${idx+1} / ${deck.length}`;
+  const k=WORDS.filter(x=>status[x.w]==='know').length;
+  $('known').textContent=`· ${k}/${WORDS.length} known`;
+  $('fill').style.width=((idx+1)/deck.length*100)+'%';
+}
+function go(d){ if(!deck.length)return; idx=(idx+d+deck.length)%deck.length; render(); }
+function mark(s){
+  status[deck[idx].w]=s; save();
+  if(idx===deck.length-1){ render(); finish(); } else go(1);
+}
+function finish(){
+  const k=WORDS.filter(x=>status[x.w]==='know').length;
+  $('doneMsg').textContent = deck.length ? `You know ${k} of ${WORDS.length} words.` : 'No missed words left — great job!';
+  $('done').style.display='flex';
+}
+card.addEventListener('click',()=>card.classList.toggle('flipped'));
+$('prev').onclick=()=>go(-1); $('next').onclick=()=>go(1);
+$('know').onclick=()=>mark('know'); $('miss').onclick=()=>mark('miss');
+$('modeBtn').onclick=e=>{defFirst=!defFirst;e.target.textContent=defFirst?'Definition first':'Word first';render(true);};
+$('shufBtn').onclick=e=>{shuffled=!shuffled;e.target.classList.toggle('on',shuffled);e.target.textContent=shuffled?'Shuffled':'Shuffle';build();};
+$('unkBtn').onclick=e=>{onlyMissed=!onlyMissed;e.target.classList.toggle('on',onlyMissed);e.target.textContent='Only missed: '+(onlyMissed?'on':'off');build();};
+$('again').onclick=()=>{ if(!onlyMissed){status={};save();} build(); };
+// swipe
+let sx=null;
+$('scene').addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
+$('scene').addEventListener('touchend',e=>{ if(sx===null)return; const dx=e.changedTouches[0].clientX-sx; sx=null; if(Math.abs(dx)>60){ go(dx<0?1:-1); e.preventDefault(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight')go(1); if(e.key==='ArrowLeft')go(-1); if(e.key===' '){e.preventDefault();card.classList.toggle('flipped');} });
+build();
+</script>
+</body>
+</html>

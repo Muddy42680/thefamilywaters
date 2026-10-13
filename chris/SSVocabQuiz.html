@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vocabulary Quiz</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#f1f5f9;color:#0f172a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;padding:20px 14px}
+  .wrap{width:100%;max-width:720px}
+  h1{margin:0 0 4px;font-size:28px}
+  .sub{color:#64748b;margin:0 0 18px}
+  .panel{background:#fff;border-radius:18px;padding:22px;box-shadow:0 4px 18px rgba(15,23,42,.08)}
+  .opt-group{margin:14px 0}
+  .opt-group b{display:block;margin-bottom:8px}
+  .pills{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{border:2px solid #cbd5e1;background:#fff;border-radius:999px;padding:9px 16px;font-size:15px;cursor:pointer}
+  .pill.sel{background:#2563eb;border-color:#2563eb;color:#fff}
+  .btn{background:#2563eb;color:#fff;border:none;border-radius:12px;padding:13px 24px;font-size:17px;font-weight:600;cursor:pointer;margin-top:12px}
+  .btn.alt{background:#e2e8f0;color:#0f172a;margin-left:8px}
+  .btn:disabled{opacity:.4;cursor:default}
+  .meta{display:flex;justify-content:space-between;color:#64748b;font-size:14px;margin-bottom:8px}
+  .bar{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-bottom:18px}
+  .bar div{height:100%;background:#2563eb;transition:width .3s}
+  .q{font-size:20px;line-height:1.4;font-weight:600;margin-bottom:16px}
+  .q small{display:block;font-size:13px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+  .choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #cbd5e1;border-radius:12px;padding:13px 14px;margin-bottom:10px;font-size:16px;line-height:1.35;cursor:pointer}
+  .choice:hover:not(:disabled){border-color:#2563eb;background:#eff6ff}
+  .choice.right{background:#dcfce7;border-color:#16a34a}
+  .choice.wrong{background:#fee2e2;border-color:#dc2626}
+  .fb{min-height:24px;font-weight:600;margin:4px 0}
+  .score{font-size:56px;font-weight:800;text-align:center;margin:6px 0}
+  .msg{text-align:center;font-size:18px;margin-bottom:14px}
+  .miss{border-top:1px solid #e2e8f0;padding:10px 0}
+  .miss b{color:#dc2626}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📚 Vocabulary Quiz</h1>
+  <p class="sub">Colonization unit</p>
+
+  <div class="panel" id="start">
+    <div class="opt-group"><b>Question type</b>
+      <div class="pills" id="modePills">
+        <button class="pill sel" data-v="def">Pick the definition</button>
+        <button class="pill" data-v="word">Pick the word</button>
+        <button class="pill" data-v="mix">Mixed</button>
+      </div></div>
+    <div class="opt-group"><b>Number of questions</b>
+      <div class="pills" id="numPills">
+        <button class="pill" data-v="10">10</button>
+        <button class="pill sel" data-v="20">All 20</button>
+      </div></div>
+    <button class="btn" id="startBtn">Start quiz</button>
+  </div>
+
+  <div class="panel hidden" id="quiz">
+    <div class="meta"><span id="qnum"></span><span id="qscore"></span></div>
+    <div class="bar"><div id="prog"></div></div>
+    <div class="q" id="qtext"></div>
+    <div id="choices"></div>
+    <div class="fb" id="fb"></div>
+    <button class="btn" id="nextBtn" disabled>Next</button>
+  </div>
+
+  <div class="panel hidden" id="result">
+    <div class="score" id="rscore"></div>
+    <div class="msg" id="rmsg"></div>
+    <div id="missed"></div>
+    <div style="text-align:center">
+      <button class="btn" id="retryMissed">Retry missed words</button>
+      <button class="btn alt" id="restart">New quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const WORDS = [
+["colony","a country or area under the full or partial political control of another country, typically a distant one, and occupied by settlers from that country"],
+["agriculture","practice of farming, for the growing and production of crops, livestock, or poultry."],
+["colonize","Europeans come to settle among and establish political control over (the indigenous people of an area)."],
+["government","The political system in which a nation operates/functions."],
+["economy","the way in which a country makes and spends money."],
+["missionary","a person sent on a religious mission, especially one sent to promote Christianity in a foreign area."],
+["Encomienda System","A Spanish system where colonists were given the right to demand labor and payment from Indigenous people in an area, supposedly in exchange for protecting them and teaching them Christianity. In reality it often meant forced labor."],
+["conquest","the subjugation and control of a place or people by use of military force."],
+["assimilation","to absorb a group into the culture of a larger population."],
+["servitude","the state of being a slave or completely subject to someone more powerful."],
+["Native American","the indigenous (original) people of North, Central, and South America."],
+["Doctrine of Discovery","established a spiritual, political, and legal justification for colonization and seizure of land not inhabited by Christians."],
+["exploration","Europe was the first continent to explore and colonize the Americas."],
+["indigenous","the original or native people in a particular place."],
+["embark","to begin a course of action like an exploration."],
+["class system","a system in which social status is determined by the family into which a person is born."],
+["diplomacy","the art of dealing with people in a sensitive and effective way."],
+["covenant","an agreement which brings about a relationship of commitment."],
+["compact","a formal agreement or contract between two or more parties."],
+["monarchy","a form of government with a monarch (King or Queen) at the head."]
+].map(([w,d])=>({w,d}));
+
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+let mode='def', num=20, qs=[], i=0, score=0, missed=[], answered=false;
+
+function pills(id,cb){ $(id).addEventListener('click',e=>{ const b=e.target.closest('.pill'); if(!b)return; [...$(id).children].forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); cb(b.dataset.v); }); }
+pills('modePills',v=>mode=v);
+pills('numPills',v=>num=+v);
+
+function begin(pool){
+  const list=shuffle(pool).slice(0,num>pool.length?pool.length:num);
+  qs=list.map(c=>({c, type: mode==='mix' ? (Math.random()<.5?'def':'word') : mode}));
+  i=0; score=0; missed=[];
+  $('start').classList.add('hidden'); $('result').classList.add('hidden'); $('quiz').classList.remove('hidden');
+  show();
+}
+function show(){
+  answered=false;
+  const {c,type}=qs[i];
+  $('qnum').textContent=`Question ${i+1} of ${qs.length}`;
+  $('qscore').textContent=`Score: ${score}`;
+  $('prog').style.width=(i/qs.length*100)+'%';
+  const others=shuffle(WORDS.filter(x=>x.w!==c.w)).slice(0,3);
+  const opts=shuffle([c,...others]);
+  $('qtext').innerHTML = type==='def'
+    ? `<small>What does this word mean?</small>${c.w}`
+    : `<small>Which word matches this definition?</small>${c.d}`;
+  $('choices').innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button'); b.className='choice';
+    b.textContent = type==='def' ? o.d : o.w;
+    b.onclick=()=>pick(b,o.w===c.w,c,opts,type);
+    b.dataset.correct = o.w===c.w;
+    $('choices').appendChild(b);
+  });
+  $('fb').textContent=''; $('nextBtn').disabled=true;
+  $('nextBtn').textContent = i===qs.length-1?'See results':'Next';
+}
+function pick(btn,ok,c){
+  if(answered)return; answered=true;
+  [...$('choices').children].forEach(b=>{ b.disabled=true; if(b.dataset.correct==='true')b.classList.add('right'); });
+  if(ok){score++; $('fb').textContent='✅ Correct!'; $('fb').style.color='#16a34a';}
+  else{btn.classList.add('wrong'); missed.push(c); $('fb').textContent='❌ Not quite — the right answer is highlighted.'; $('fb').style.color='#dc2626';}
+  $('qscore').textContent=`Score: ${score}`;
+  $('nextBtn').disabled=false;
+}
+$('nextBtn').onclick=()=>{ if(i<qs.length-1){i++;show();} else results(); };
+function results(){
+  $('quiz').classList.add('hidden'); $('result').classList.remove('hidden');
+  const pct=Math.round(score/qs.length*100);
+  $('rscore').textContent=`${score} / ${qs.length}`;
+  $('rmsg').textContent = pct===100?'🏆 Perfect!':pct>=80?'🌟 Great job!':pct>=60?'👍 Getting there — review the missed words.':'📖 Keep studying — you can do it!';
+  $('missed').innerHTML = missed.length ? '<b>Review these:</b>'+missed.map(c=>`<div class="miss"><b>${c.w}</b> — ${c.d}</div>`).join('') : '';
+  $('retryMissed').style.display = missed.length?'inline-block':'none';
+}
+$('startBtn').onclick=()=>begin(WORDS);
+$('retryMissed').onclick=()=>begin(missed.slice());
+$('restart').onclick=()=>{ $('result').classList.add('hidden'); $('start').classList.remove('hidden'); };
+</script>
+</body>
+</html>
