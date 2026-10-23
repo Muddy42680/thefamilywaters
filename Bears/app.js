@@ -1,8 +1,8 @@
 // ---- Roster (edit here) ----
 const ROSTER = [
-  "Michael", "Johnny", "Gavin", "Chase",
-  "Bradley", "Nick", "Stefano", "Zane",
-  "Isaac", "Bobby", "Patrick", "Aiden"
+  "Jason", "Logan", "Chase", "Nick",
+  "Stefano", "Sebastian", "TJ", "Aiden",
+  "Bobby"
 ];
 
 // ---- State ----
