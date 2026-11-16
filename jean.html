@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visiting Jean</title>
+<style>
+/* Layout: header, month grid on the left, selected-day panel + add form on the right; stacks on phones */
+:root{
+  --bg:#f3f6f7; --surface:#ffffff; --fg:#17262b; --muted:#5d7178; --line:#d9e2e5;
+  --accent:#1f6f78; --accent-fg:#ffffff; --today:#e4f1f2; --danger:#b3261e;
+  --font:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  --radius:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1a1d; --surface:#172528; --fg:#e8f0f2; --muted:#93a8ae; --line:#2a3d42;
+  --accent:#4fb3bd; --accent-fg:#06191c; --today:#1c3338; --danger:#ff8a80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1a1d; --surface:#172528; --fg:#e8f0f2; --muted:#93a8ae; --line:#2a3d42;
+  --accent:#4fb3bd; --accent-fg:#06191c; --today:#1c3338; --danger:#ff8a80; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 var(--font);
+  padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:20px}
+header h1{margin:0;font-size:1.7rem;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted)}
+.banner{background:var(--surface);border:1px dashed var(--accent);border-radius:var(--radius);padding:12px 14px;font-size:.9rem}
+.banner code{background:var(--today);padding:1px 5px;border-radius:4px}
+.main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
+@media(max-width:820px){.main{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+h2{margin:0 0 10px;font-size:1.05rem}
+.cal-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cal-head h2{margin:0;flex:1;font-size:1.15rem}
+button,select,input,textarea{font:inherit;color:var(--fg)}
+button{cursor:pointer}
+.btn{background:var(--accent);color:var(--accent-fg);border:0;border-radius:8px;padding:9px 14px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);padding:6px 11px;font-weight:500}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dow,.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.dow div{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:center;padding-bottom:4px}
+.day{min-height:84px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:4px;text-align:left;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.day.out{opacity:.45}
+.day.today{background:var(--today)}
+.day.sel{outline:2px solid var(--accent);outline-offset:-1px}
+.day .n{font-size:.8rem;font-weight:600;color:var(--muted)}
+.day.today .n{color:var(--accent)}
+.chip{font-size:.72rem;line-height:1.25;border-radius:4px;padding:1px 5px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--c)}
+.more{font-size:.7rem;color:var(--muted)}
+@media(max-width:560px){
+  .day{min-height:56px;padding:3px}
+  .chip{width:8px;height:8px;padding:0;border-radius:50%;font-size:0;display:inline-block}
+  .chips{display:flex;flex-wrap:wrap;gap:3px}
+}
+.chips{display:flex;flex-direction:column;gap:2px;min-width:0}
+@media(max-width:560px){.chips{flex-direction:row}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:.85rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--c);display:inline-block}
+.visit{display:grid;grid-template-columns:6px minmax(0,1fr) auto;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.visit:first-of-type{border-top:0}
+.bar{background:var(--c);border-radius:3px}
+.visit b{display:block}
+.visit .t{color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
+.visit .note{margin-top:4px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.9rem}
+.del{background:none;border:0;color:var(--muted);font-size:.8rem;text-decoration:underline;padding:2px}
+.del.confirm{color:var(--danger)}
+.empty{color:var(--muted);font-size:.92rem;margin:0}
+form{display:grid;gap:12px}
+label{display:grid;gap:4px;font-size:.85rem;font-weight:600}
+input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%;font-weight:400}
+textarea{min-height:70px;resize:vertical}
+.row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:420px){.row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.row label:first-child{grid-column:1/-1}}
+.msg{font-size:.85rem;min-height:1.2em;color:var(--muted)}
+.msg.err{color:var(--danger)}
+.upnext{display:grid;gap:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="title">Visiting Jean</h1>
+    <p>Add the date/time you plan to visit so visits can be spread out and we are not subject to the two person limit.</p>
+  </header>
+
+  <div class="banner" id="demoBanner" hidden>
+    <b>Preview mode.</b> Visits are saved only in this browser. To share them with everyone, follow the steps in <code>SETUP.md</code> and paste your database address into <code>DATABASE_URL</code> near the top of this file's script.
+  </div>
+
+  <div class="main">
+    <section class="card" aria-label="Month calendar">
+      <div class="cal-head">
+        <button class="btn ghost" id="prev" aria-label="Previous month">&larr;</button>
+        <h2 id="monthLabel"></h2>
+        <button class="btn ghost" id="todayBtn">Today</button>
+        <button class="btn ghost" id="next" aria-label="Next month">&rarr;</button>
+      </div>
+      <div class="dow" id="dow"></div>
+      <div class="grid" id="grid"></div>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <div style="display:grid;gap:20px;min-width:0">
+      <section class="card" aria-live="polite">
+        <h2 id="dayTitle"></h2>
+        <div id="dayList"></div>
+      </section>
+
+      <section class="card">
+        <h2>Add a visit</h2>
+        <form id="form" autocomplete="off">
+          <label for="nameSel">Your name
+            <select id="nameSel"></select>
+          </label>
+          <label for="nameNew" id="newWrap" hidden>New name
+            <input id="nameNew" maxlength="30" placeholder="First name">
+          </label>
+          <div class="row">
+            <label for="date">Date <input id="date" type="date" required></label>
+            <label for="start">From <input id="start" type="time" required value="14:00"></label>
+            <label for="end">Until <input id="end" type="time" required value="15:00"></label>
+          </div>
+          <label for="note">Note for the group (optional)
+            <textarea id="note" maxlength="400" placeholder="e.g. Bringing dinner, she's resting in the afternoons, parking garage B is closest"></textarea>
+          </label>
+          <button class="btn" type="submit" id="save">Add visit</button>
+          <div class="msg" id="msg"></div>
+        </form>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== SETUP: paste your Firebase Realtime Database address between the quotes (see SETUP.md) ===== */
+const DATABASE_URL = "https://jean-calendar-default-rtdb.firebaseio.com/";   // e.g. "https://jean-visits-default-rtdb.firebaseio.com"
+const PATIENT = "Jean";
+
+/* ===== storage: shared Firebase REST, or localStorage preview when no address is set ===== */
+const SHARED = !!DATABASE_URL.trim();
+const DB = DATABASE_URL.trim().replace(/\/+$/,'');
+const LS = "jean-visits-preview";
+const store = {
+  async load(){
+    if(!SHARED){ try{ return JSON.parse(localStorage.getItem(LS)||"{}"); }catch(e){ return {}; } }
+    const r = await fetch(DB+"/visits.json"); if(!r.ok) throw new Error("load");
+    return (await r.json()) || {};
+  },
+  async add(v){
+    if(!SHARED){ const all = await this.load(); all["l"+Date.now()] = v;
+      try{ localStorage.setItem(LS, JSON.stringify(all)); }catch(e){} return; }
+    const r = await fetch(DB+"/visits.json",{method:"POST",body:JSON.stringify(v)}); if(!r.ok) throw new Error("save");
+  },
+  async remove(id){
+    if(!SHARED){ const all = await this.load(); delete all[id];
+      try{ localStorage.setItem(LS, JSON.stringify(all)); }catch(e){} return; }
+    const r = await fetch(DB+"/visits/"+encodeURIComponent(id)+".json",{method:"DELETE"}); if(!r.ok) throw new Error("delete");
+  }
+};
+
+/* ===== helpers ===== */
+const $ = id => document.getElementById(id);
+const PALETTE = ["#1f77b4","#d95f02","#2ca25f","#c2307a","#7b5ea7","#b58900","#0e9aa7","#d1495b","#5b7c2e","#8c5a3c"];
+const pad = n => String(n).padStart(2,"0");
+const iso = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const t12 = t => { const [h,m]=t.split(":").map(Number); return ((h%12)||12)+":"+pad(m)+(h<12?" AM":" PM"); };
+const key = n => n.trim().toLowerCase();
+
+let visits = [];          // [{id,name,date,start,end,note,created}]
+let colors = {};          // key(name) -> color
+let names = [];           // display names, by first appearance
+let view = new Date(); view.setDate(1);
+let selected = iso(new Date());
+let confirming = null;
+
+function rebuild(raw){
+  visits = Object.entries(raw).map(([id,v])=>({id,...v}))
+    .filter(v=>v&&v.name&&v.date&&v.start)
+    .sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start));
+  const byFirst = [...visits].sort((a,b)=>(a.created||0)-(b.created||0));
+  colors = {}; names = [];
+  for(const v of byFirst){
+    const k = key(v.name);
+    if(!(k in colors)){ colors[k] = PALETTE[names.length % PALETTE.length]; names.push(v.name.trim()); }
+  }
+}
+const colorOf = n => colors[key(n)] || PALETTE[0];
+
+/* ===== render ===== */
+function renderCal(){
+  $("monthLabel").textContent = view.toLocaleDateString(undefined,{month:"long",year:"numeric"});
+  const first = new Date(view.getFullYear(),view.getMonth(),1);
+  const start = new Date(first); start.setDate(1-first.getDay());
+  const today = iso(new Date());
+  let html = "";
+  for(let i=0;i<42;i++){
+    const d = new Date(start); d.setDate(start.getDate()+i);
+    if(i>=35 && d.getMonth()!==view.getMonth()) break;
+    const k = iso(d), dv = visits.filter(v=>v.date===k);
+    const chips = dv.slice(0,3).map(v=>`<span class="chip" style="--c:${colorOf(v.name)}" title="${esc(v.name)} ${t12(v.start)}">${esc(v.name)} ${t12(v.start).replace(":00","")}</span>`).join("");
+    const more = dv.length>3?`<span class="more">+${dv.length-3} more</span>`:"";
+    html += `<button type="button" class="day${d.getMonth()!==view.getMonth()?" out":""}${k===today?" today":""}${k===selected?" sel":""}" data-d="${k}" aria-label="${d.toDateString()}, ${dv.length} visit${dv.length===1?"":"s"}">
+      <span class="n">${d.getDate()}</span><span class="chips">${chips}${more}</span></button>`;
+  }
+  $("grid").innerHTML = html;
+  $("legend").innerHTML = names.length
+    ? names.map(n=>`<span><i class="dot" style="--c:${colorOf(n)}"></i>${esc(n)}</span>`).join("")
+    : `<span class="empty">Colors appear here as people add visits.</span>`;
+}
+
+function renderDay(){
+  const d = new Date(selected+"T00:00:00");
+  $("dayTitle").textContent = d.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
+  const dv = visits.filter(v=>v.date===selected);
+  $("dayList").innerHTML = dv.length ? dv.map(v=>`
+    <div class="visit" style="--c:${colorOf(v.name)}">
+      <div class="bar"></div>
+      <div style="min-width:0"><b>${esc(v.name)}</b>
+        <span class="t">${t12(v.start)}${v.end?" – "+t12(v.end):""}</span>
+        ${v.note?`<div class="note">${esc(v.note)}</div>`:""}</div>
+      <button class="del${confirming===v.id?" confirm":""}" data-del="${v.id}">${confirming===v.id?"Tap again to remove":"Remove"}</button>
+    </div>`).join("") : `<p class="empty">No visits yet. Pick a time below to be the first.</p>`;
+}
+
+function renderNames(){
+  const prev = $("nameSel").value;
+  let last = ""; try{ last = localStorage.getItem("jean-last-name")||""; }catch(e){}
+  $("nameSel").innerHTML =
+    names.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("") +
+    `<option value="__new">${names.length?"Someone new…":"Enter your name…"}</option>`;
+  const want = prev || (names.find(n=>key(n)===key(last)) || (names.length?"":"__new"));
+  if(want) $("nameSel").value = want;
+  syncNew();
+}
+function syncNew(){
+  const isNew = $("nameSel").value==="__new" || !$("nameSel").value;
+  $("newWrap").hidden = !isNew;
+  $("nameNew").required = isNew;
+}
+function renderAll(){ renderCal(); renderDay(); renderNames(); }
+
+/* ===== data refresh ===== */
+async function refresh(){
+  try{ rebuild(await store.load()); renderAll(); setMsg("",false); }
+  catch(e){ setMsg("Could not reach the calendar. Check your connection and try again.",true); }
+}
+function setMsg(t,err){ $("msg").textContent=t; $("msg").className="msg"+(err?" err":""); }
+
+/* ===== events ===== */
+$("prev").onclick = ()=>{ view.setMonth(view.getMonth()-1); renderCal(); };
+$("next").onclick = ()=>{ view.setMonth(view.getMonth()+1); renderCal(); };
+$("todayBtn").onclick = ()=>{ const n=new Date(); view=new Date(n.getFullYear(),n.getMonth(),1); selected=iso(n); $("date").value=selected; renderCal(); renderDay(); };
+$("grid").onclick = e=>{
+  const b = e.target.closest(".day"); if(!b) return;
+  selected = b.dataset.d; $("date").value = selected; confirming = null; renderCal(); renderDay();
+};
+$("dayList").onclick = async e=>{
+  const b = e.target.closest("[data-del]"); if(!b) return;
+  if(confirming!==b.dataset.del){ confirming=b.dataset.del; renderDay(); return; }
+  confirming=null;
+  try{ await store.remove(b.dataset.del); await refresh(); }catch(err){ setMsg("Could not remove that visit. Try again.",true); }
+};
+$("nameSel").onchange = syncNew;
+$("form").onsubmit = async e=>{
+  e.preventDefault();
+  const isNew = $("nameSel").value==="__new" || !$("nameSel").value;
+  const name = (isNew ? $("nameNew").value : $("nameSel").value).trim();
+  const date=$("date").value, start=$("start").value, end=$("end").value, note=$("note").value.trim();
+  if(!name) return setMsg("Please enter your name.",true);
+  if(end && end<=start) return setMsg("The end time must be after the start time.",true);
+  // reuse existing spelling/color if the typed name matches someone already listed
+  const existing = names.find(n=>key(n)===key(name));
+  $("save").disabled = true;
+  try{
+    await store.add({name:existing||name,date,start,end,note,created:Date.now()});
+    try{ localStorage.setItem("jean-last-name",existing||name); }catch(e){}
+    $("nameNew").value=""; $("note").value="";
+    selected = date; const d=new Date(date+"T00:00:00"); view=new Date(d.getFullYear(),d.getMonth(),1);
+    await refresh(); setMsg("Visit added. Thank you!",false);
+  }catch(err){ setMsg("Could not save your visit. Check your connection and try again.",true); }
+  $("save").disabled = false;
+};
+
+/* ===== start ===== */
+$("title").textContent = "Visiting "+PATIENT;
+document.title = "Visiting "+PATIENT;
+$("dow").innerHTML = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>`<div>${d}</div>`).join("");
+$("date").value = selected;
+$("demoBanner").hidden = SHARED;
+renderAll();
+refresh();
+setInterval(()=>{ if(!document.hidden) refresh(); }, 20000);
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) refresh(); });
+</script>
+</body>
+</html>
